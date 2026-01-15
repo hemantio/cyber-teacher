@@ -2,6 +2,7 @@
 
 import { useSimulationStore } from '@/store/simulation-store';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useSound } from '@/hooks/use-sound';
 
 const LOG_COLORS: Record<string, string> = {
     info: '#22D3EE',
@@ -70,8 +71,14 @@ export function RightPanel() {
         return stats;
     }, [packets]);
 
+    // Sound hooks
+    const { playAttack, playDefense } = useSound();
+
     // Handle attack button click
     const handleAttack = useCallback((attackType: string, attackId: string) => {
+        // Play attack sound
+        playAttack(attackId as 'ddos' | 'sql' | 'malware' | 'phishing' | 'mitm');
+
         addLog({
             type: 'attack',
             message: `⚠️ Attack initiated: ${attackType}`,
@@ -87,10 +94,13 @@ export function RightPanel() {
         setTimeout(() => {
             document.body.style.background = '';
         }, 300);
-    }, [addLog, damageNetwork]);
+    }, [addLog, damageNetwork, playAttack]);
 
     // Handle defense button click
     const handleDefense = useCallback((defenseType: string, defenseId: string) => {
+        // Play defense sound
+        playDefense();
+
         addLog({
             type: 'defense',
             message: `🛡️ Defense activated: ${defenseType}`,
@@ -106,7 +116,7 @@ export function RightPanel() {
         setTimeout(() => {
             document.body.style.background = '';
         }, 300);
-    }, [addLog, healNetwork]);
+    }, [addLog, healNetwork, playDefense]);
 
     // Handle log hover - highlight related entities
     const handleLogHover = useCallback((log: { entityId?: string; id: string }) => {
