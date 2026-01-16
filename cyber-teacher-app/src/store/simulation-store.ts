@@ -5,6 +5,7 @@ import { NetworkEntity, EntityStatus } from '@/types/entities';
 import { Connection, ConnectionStyle } from '@/types/connections';
 import { Packet } from '@/types/packets';
 import { Lesson, LessonStep } from '@/types/lessons';
+import type { InspectorType, DeviceData, ConnectionData, AttackData, DefenseData } from '@/types/simulation-data';
 
 export interface LogEntry {
     id: string;
@@ -99,6 +100,27 @@ interface SimulationState {
     highlightedConnectionId: string | null;
     setHighlight: (entityId: string | null, connectionId?: string | null) => void;
     clearHighlight: () => void;
+
+    // Hover/Selection state for interactive info system
+    hoveredNodeId: string | null;
+    selectedNodeId: string | null;
+    hoveredConnectionId: string | null;
+    selectedConnectionId: string | null;
+
+    // Inspector state
+    inspectorOpen: boolean;
+    inspectorType: InspectorType;
+    inspectorData: DeviceData | ConnectionData | AttackData | DefenseData | null;
+
+    // Hover/Selection actions
+    setHoveredNode: (id: string | null) => void;
+    setSelectedNode: (id: string | null) => void;
+    setHoveredConnection: (id: string | null) => void;
+    setSelectedConnection: (id: string | null) => void;
+
+    // Inspector actions
+    openInspector: (type: InspectorType, data: DeviceData | ConnectionData | AttackData | DefenseData) => void;
+    closeInspector: () => void;
 }
 
 export const useSimulationStore = create<SimulationState>((set, get) => ({
@@ -294,5 +316,37 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     clearHighlight: () => set({
         highlightedEntityId: null,
         highlightedConnectionId: null
-    })
+    }),
+
+    // Hover/Selection state
+    hoveredNodeId: null,
+    selectedNodeId: null,
+    hoveredConnectionId: null,
+    selectedConnectionId: null,
+
+    // Inspector state
+    inspectorOpen: false,
+    inspectorType: null,
+    inspectorData: null,
+
+    // Hover/Selection actions
+    setHoveredNode: (id) => set({ hoveredNodeId: id }),
+    setSelectedNode: (id) => set({ selectedNodeId: id }),
+    setHoveredConnection: (id) => set({ hoveredConnectionId: id }),
+    setSelectedConnection: (id) => set({ selectedConnectionId: id }),
+
+    // Inspector actions
+    openInspector: (type, data) => set({
+        inspectorOpen: true,
+        inspectorType: type,
+        inspectorData: data,
+        selectedNodeId: type === 'device' ? (data as DeviceData).id : null,
+    }),
+
+    closeInspector: () => set({
+        inspectorOpen: false,
+        inspectorType: null,
+        inspectorData: null,
+        selectedNodeId: null,
+    }),
 }));
