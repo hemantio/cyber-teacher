@@ -9,6 +9,10 @@ import { GridBackground } from '@/components/ui/GridBackground';
 import { NeonCard, NeonPanel } from '@/components/ui/NeonCard';
 import { CyberButton } from '@/components/ui/CyberButton';
 import { StatusLED, StatusIndicator } from '@/components/ui/StatusLED';
+import { NodeTooltip } from '@/components/tooltips/NodeTooltip';
+import { DeviceInspector } from '@/components/inspector/DeviceInspector';
+import { generateTooltipData } from '@/lib/device-data-generator';
+import type { DeviceData, DeviceStatus } from '@/types/simulation-data';
 import {
     DDoSIcon,
     SQLInjectionIcon,
@@ -66,13 +70,19 @@ export default function SandboxPage() {
         addConnection,
         clearEntities,
         clearConnections,
-        clearPackets
+        clearPackets,
+        entities,
+        hoveredNodeId,
+        inspectorOpen,
+        inspectorData,
+        closeInspector,
     } = useSimulationStore();
     const { playAttack, playDefense, playSuccess, playError } = useSound();
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [speed, setSpeed] = useState(1);
     const [systemLogs, setSystemLogs] = useState<LogEntry[]>([]);
+    const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
     const logContainerRef = useRef<HTMLDivElement>(null);
 
     // Initialize network topology
@@ -319,7 +329,7 @@ export default function SandboxPage() {
                         showParticles={true}
                         particleCount={15}
                     >
-                        <CyberpunkCanvas />
+                        <CyberpunkCanvas onMousePositionChange={(x, y) => setTooltipPos({ x, y })} />
 
                         {/* Health Overlay */}
                         <div
@@ -423,6 +433,36 @@ export default function SandboxPage() {
                     </div>
                 </NeonPanel>
             </div>
+
+            {/* Hover Tooltip */}
+            <NodeTooltip
+                visible={hoveredNodeId !== null}
+                x={tooltipPos.x}
+                y={tooltipPos.y}
+                data={hoveredNodeId ? (() => {
+                    const entity = entities.get(hoveredNodeId);
+                    if (!entity) return null;
+                    const status: DeviceStatus = entity.status === 'active' ? 'online'
+                        : entity.status === 'compromised' ? 'compromised'
+                            : entity.status === 'blocked' ? 'isolated'
+                                : 'online';
+                    return generateTooltipData(
+                        entity.id,
+                        entity.metadata?.label || entity.id,
+                        entity.type,
+                        entity.metadata?.ip || 'N/A',
+                        status,
+                        networkHealth
+                    );
+                })() : null}
+            />
+
+            {/* Device Inspector Panel */}
+            <DeviceInspector
+                open={inspectorOpen}
+                onClose={closeInspector}
+                device={inspectorData as DeviceData | null}
+            />
         </div>
     );
 }
