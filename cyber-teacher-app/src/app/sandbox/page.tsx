@@ -8,7 +8,7 @@ import { useSound } from '@/hooks/use-sound';
 import { GridBackground } from '@/components/ui/GridBackground';
 import { NeonCard, NeonPanel } from '@/components/ui/NeonCard';
 import { CyberButton } from '@/components/ui/CyberButton';
-import { StatusLED, StatusIndicator } from '@/components/ui/StatusLED';
+import { StatusLED } from '@/components/ui/StatusLED';
 import { NodeTooltip } from '@/components/tooltips/NodeTooltip';
 import { DeviceInspector } from '@/components/inspector/DeviceInspector';
 import { generateTooltipData } from '@/lib/device-data-generator';
@@ -63,7 +63,6 @@ export default function SandboxPage() {
         networkHealth,
         damageNetwork,
         healNetwork,
-        logs,
         clearLogs,
         addLog,
         setEntities,
@@ -85,6 +84,13 @@ export default function SandboxPage() {
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
     const logContainerRef = useRef<HTMLDivElement>(null);
 
+    // Define addSystemLog BEFORE useEffect that uses it
+    const addSystemLog = useCallback((type: LogEntry['type'], message: string, color: string) => {
+        const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+        const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        setSystemLogs(prev => [...prev.slice(-20), { id, timestamp, type, message, color }]);
+    }, []);
+
     // Initialize network topology
     useEffect(() => {
         clearEntities();
@@ -92,9 +98,9 @@ export default function SandboxPage() {
         clearPackets();
 
         setTimeout(() => {
-            const entities = new Map();
+            const networkEntities = new Map();
 
-            entities.set('user-pc', {
+            networkEntities.set('user-pc', {
                 id: 'user-pc',
                 type: 'PC',
                 position: { x: -350, y: 0 },
@@ -102,7 +108,7 @@ export default function SandboxPage() {
                 metadata: { label: 'USER PC', ip: '192.168.1.10' }
             });
 
-            entities.set('router', {
+            networkEntities.set('router', {
                 id: 'router',
                 type: 'Router',
                 position: { x: -150, y: 0 },
@@ -110,7 +116,7 @@ export default function SandboxPage() {
                 metadata: { label: 'ROUTER', ip: '192.168.1.1' }
             });
 
-            entities.set('dns-server', {
+            networkEntities.set('dns-server', {
                 id: 'dns-server',
                 type: 'DNS',
                 position: { x: -50, y: 150 },
@@ -118,7 +124,7 @@ export default function SandboxPage() {
                 metadata: { label: 'DNS SERVER', ip: '8.8.8.8' }
             });
 
-            entities.set('firewall', {
+            networkEntities.set('firewall', {
                 id: 'firewall',
                 type: 'Firewall',
                 position: { x: 50, y: -80 },
@@ -126,7 +132,7 @@ export default function SandboxPage() {
                 metadata: { label: 'FIREWALL' }
             });
 
-            entities.set('web-server', {
+            networkEntities.set('web-server', {
                 id: 'web-server',
                 type: 'Server',
                 position: { x: 180, y: 0 },
@@ -134,7 +140,7 @@ export default function SandboxPage() {
                 metadata: { label: 'WEB SERVER', ip: '10.0.0.5' }
             });
 
-            entities.set('attacker', {
+            networkEntities.set('attacker', {
                 id: 'attacker',
                 type: 'Attacker',
                 position: { x: 350, y: 0 },
@@ -142,7 +148,7 @@ export default function SandboxPage() {
                 metadata: { label: 'ATTACKER', ip: '45.5.5.166' }
             });
 
-            setEntities(entities);
+            setEntities(networkEntities);
 
             setTimeout(() => {
                 addConnection({ id: 'conn-1', sourceId: 'user-pc', targetId: 'router', style: 'solid', status: 'active', protocol: 'DHCP' });
@@ -153,18 +159,14 @@ export default function SandboxPage() {
             }, 200);
         }, 100);
 
-        addSystemLog('info', 'System initialized. Network topology loaded.', '#22D3EE');
-        addSystemLog('info', 'DHCP Request from User PC', '#22D3EE');
-        addSystemLog('info', 'DHCP | Status: OK', '#22C55E');
+        setTimeout(() => {
+            addSystemLog('info', 'System initialized. Network topology loaded.', '#22D3EE');
+            addSystemLog('info', 'DHCP Request from User PC', '#22D3EE');
+            addSystemLog('info', 'DHCP | Status: OK', '#22C55E');
+        }, 0);
 
         return () => { clearEntities(); };
-    }, []);
-
-    const addSystemLog = useCallback((type: LogEntry['type'], message: string, color: string) => {
-        const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
-        const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        setSystemLogs(prev => [...prev.slice(-20), { id, timestamp, type, message, color }]);
-    }, []);
+    }, [addConnection, addSystemLog, clearConnections, clearEntities, clearPackets, setEntities]);
 
     useEffect(() => {
         if (logContainerRef.current) {

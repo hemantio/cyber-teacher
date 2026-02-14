@@ -224,7 +224,6 @@ function drawEncryptionShimmer(
 
     const dx = x2 - x1;
     const dy = y2 - y1;
-    const length = Math.sqrt(dx * dx + dy * dy);
 
     // Calculate shimmer center position along line
     const shimmerX = x1 + dx * shimmerPos;

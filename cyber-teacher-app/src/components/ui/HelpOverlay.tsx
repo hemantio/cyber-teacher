@@ -163,7 +163,7 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
                     {/* Attack Types */}
                     <section>
                         <h3 className="text-lg font-semibold text-red-400 mb-4 flex items-center gap-2">
-                            <span></span> Attack Types You'll Learn
+                            <span></span> Attack Types You&apos;ll Learn
                         </h3>
                         <div className="flex flex-wrap gap-2">
                             {[

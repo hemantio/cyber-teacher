@@ -16,7 +16,7 @@ import {
     ISPIcon,
     CyberIcon,
 } from '@/components/ui/CyberIcons';
-import { Shield, AlertTriangle, Lock, Wifi, WifiOff } from 'lucide-react';
+import { AlertTriangle, Lock, Wifi, WifiOff } from 'lucide-react';
 import type { DeviceStatus } from '@/types/simulation-data';
 
 interface NodeTooltipData {
@@ -36,8 +36,15 @@ interface NodeTooltipProps {
     data: NodeTooltipData | null;
 }
 
+// Icon props type
+interface IconProps {
+    size?: 'xs' | 'sm' | 'md' | 'lg';
+    glow?: boolean;
+    glowIntensity?: number;
+}
+
 // Map entity type to icon component
-const TYPE_ICONS: Record<string, React.ComponentType<any>> = {
+const TYPE_ICONS: Record<string, React.ComponentType<IconProps>> = {
     PC: PCIcon,
     Router: RouterIcon,
     Firewall: FirewallIcon,
@@ -74,7 +81,7 @@ export function NodeTooltip({ visible, x, y, data }: NodeTooltipProps) {
     const healthColor = getHealthColor(data.health);
 
     return (
-        <Tooltip visible={visible} x={x} y={y} delay={200}>
+        <Tooltip visible={visible} x={x} y={y} delay={50}>
             <TooltipContent variant={data.status === 'under_attack' ? 'error' : 'default'}>
                 <div className="min-w-[200px]">
                     {/* Header */}

@@ -55,7 +55,7 @@ function processDDoSAttack(world: WorldState, attack: ActiveAttack): WorldState 
     const ticksElapsed = world.time - attack.startedAt;
     const newPackets: Packet[] = [...world.packets];
     const logs: EventLog[] = [...world.logs];
-    let updatedAttack = { ...attack };
+    const updatedAttack = { ...attack };
 
     // Phase transitions
     if (ticksElapsed < 5) {
@@ -142,7 +142,7 @@ function processSQLInjectionAttack(world: WorldState, attack: ActiveAttack): Wor
 
     const ticksElapsed = world.time - attack.startedAt;
     const logs: EventLog[] = [...world.logs];
-    let updatedAttack = { ...attack };
+    const updatedAttack = { ...attack };
 
     // Phase transitions
     if (ticksElapsed < 3) {
@@ -236,7 +236,7 @@ function processMalwareAttack(world: WorldState, attack: ActiveAttack): WorldSta
 
     const ticksElapsed = world.time - attack.startedAt;
     const logs: EventLog[] = [...world.logs];
-    let updatedAttack = { ...attack };
+    const updatedAttack = { ...attack };
 
     if (ticksElapsed < 5) {
         updatedAttack.phase = 'preparing';
@@ -333,7 +333,7 @@ function processMalwareAttack(world: WorldState, attack: ActiveAttack): WorldSta
 function processMITMAttack(world: WorldState, attack: ActiveAttack): WorldState {
     const ticksElapsed = world.time - attack.startedAt;
     const logs: EventLog[] = [...world.logs];
-    let updatedAttack = { ...attack };
+    const updatedAttack = { ...attack };
 
     if (ticksElapsed < 10) {
         updatedAttack.phase = 'preparing';

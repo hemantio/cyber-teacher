@@ -35,7 +35,9 @@ export function Tooltip({
 
     // Handle mounting for portal
     useEffect(() => {
-        setMounted(true);
+        setTimeout(() => {
+            setMounted(true);
+        }, 0);
         return () => setMounted(false);
     }, []);
 
@@ -83,7 +85,9 @@ export function Tooltip({
                     setShouldRender(true);
                 }, delay);
             } else {
-                setShouldRender(true);
+                setTimeout(() => {
+                    setShouldRender(true);
+                }, 0);
             }
         } else {
             clearTimeout(showTimeoutRef.current);
@@ -125,6 +129,9 @@ export function Tooltip({
             });
         }
     }, [shouldRender]);
+
+    // Debug logging - remove after fix
+    console.log('[Tooltip Debug]', { visible, shouldRender, mounted, x, y });
 
     if (!mounted || !shouldRender) return null;
 

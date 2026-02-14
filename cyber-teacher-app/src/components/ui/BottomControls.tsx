@@ -5,7 +5,7 @@ import { networkBootLesson } from '@/data/lessons/lesson-01-network-boot';
 import { ddosAttackLesson } from '@/data/lessons/lesson-02-ddos-attack';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PACKET_SPEEDS } from '@/types/packets';
-import { LessonStep, Lesson } from '@/types/lessons';
+import { LessonStep } from '@/types/lessons';
 
 // Available lessons
 const LESSONS = [
@@ -28,7 +28,6 @@ export function BottomControls() {
         previousStep,
         setPlaybackSpeed,
         loadLesson,
-        setCurrentStep,
         addLog,
         addEntity,
         addConnection,

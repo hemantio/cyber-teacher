@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { SettingsPanel } from '@/components/ui/SettingsPanel';
 import {
-    HomeIcon,
     LessonsIcon,
     CpuIcon,
     SandboxIcon,
@@ -105,8 +104,8 @@ export function Navigation() {
                                 href={item.href}
                                 data-active={isActive}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${isActive
-                                        ? 'text-cyan-400'
-                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                                    ? 'text-cyan-400'
+                                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                                     }`}
                                 style={isActive ? {
                                     background: 'rgba(34, 211, 238, 0.1)',
@@ -182,8 +181,8 @@ export function Navigation() {
                                     href={item.href}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`flex items-center gap-3 px-6 py-3 text-sm font-medium border-b transition-colors ${isActive
-                                            ? 'text-cyan-400 bg-cyan-500/10'
-                                            : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                                        ? 'text-cyan-400 bg-cyan-500/10'
+                                        : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
                                         }`}
                                     style={{ borderColor: 'rgba(71, 85, 105, 0.3)' }}
                                 >

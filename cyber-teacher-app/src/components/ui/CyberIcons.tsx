@@ -8,8 +8,6 @@ import {
     Router,
     Shield,
     ShieldCheck,
-    ShieldAlert,
-    ShieldOff,
     Globe,
     Server,
     Cloud,

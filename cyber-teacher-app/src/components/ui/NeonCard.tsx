@@ -3,7 +3,7 @@
 // Neon Card component with animated border glow
 // Glassmorphism style with hover effects
 
-import { ReactNode, useRef, useEffect, useState, forwardRef } from 'react';
+import { ReactNode, useRef, useEffect, useState } from 'react';
 import anime from 'animejs';
 
 interface NeonCardProps {

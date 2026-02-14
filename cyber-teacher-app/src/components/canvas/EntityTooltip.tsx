@@ -1,7 +1,7 @@
 'use client';
 
 import { useSimulationStore } from '@/store/simulation-store';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NetworkEntity } from '@/types/entities';
 
 interface TooltipState {

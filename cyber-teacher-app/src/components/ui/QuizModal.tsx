@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Quiz, QuizQuestion } from '@/types/lessons';
+import { Quiz } from '@/types/lessons';
 import { useSound } from '@/hooks/use-sound';
 
 interface QuizModalProps {

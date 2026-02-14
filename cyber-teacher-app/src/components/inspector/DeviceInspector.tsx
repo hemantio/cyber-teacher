@@ -22,7 +22,6 @@ import {
     DNSIcon,
     ISPIcon,
     CyberIcon,
-    HealthIcon,
 } from '@/components/ui/CyberIcons';
 import {
     Monitor,
@@ -31,13 +30,7 @@ import {
     ShieldAlert,
     Cpu,
     BookOpen,
-    HardDrive,
-    Wifi,
-    Clock,
-    Server,
-    AlertTriangle,
     CheckCircle,
-    XCircle,
     Lock,
     Unlock,
 } from 'lucide-react';
@@ -49,8 +42,14 @@ interface DeviceInspectorProps {
     device: DeviceData | null;
 }
 
+// Icon props type
+interface IconProps {
+    size?: 'xs' | 'sm' | 'md' | 'lg';
+    glow?: boolean;
+}
+
 // Map entity type to icon
-const TYPE_ICONS: Record<string, React.ComponentType<any>> = {
+const TYPE_ICONS: Record<string, React.ComponentType<IconProps>> = {
     PC: PCIcon,
     Router: RouterIcon,
     Firewall: FirewallIcon,
@@ -106,12 +105,16 @@ function formatBytes(bytes: number): string {
 }
 
 export function DeviceInspector({ open, onClose, device }: DeviceInspectorProps) {
+    // Track device ID to reset tab when device changes
+    const deviceId = device?.id;
     const [activeTab, setActiveTab] = useState('overview');
 
     // Reset tab when device changes
     useEffect(() => {
-        if (device) setActiveTab('overview');
-    }, [device?.id]);
+        setTimeout(() => {
+            setActiveTab('overview');
+        }, 0);
+    }, [deviceId]);
 
     if (!device) return null;
 

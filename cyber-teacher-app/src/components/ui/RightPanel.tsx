@@ -113,7 +113,7 @@ export function RightPanel({ onStartQuiz }: RightPanelProps) {
                         <div className="flex items-center gap-2 mb-2">
                             <span></span>
                             <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-400">
-                                What's Happening
+                                What&apos;s Happening
                             </h3>
                         </div>
                         {currentStep && (

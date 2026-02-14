@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useSimulationStore } from '@/store/simulation-store';
-import { NetworkEntity, ENTITY_VISUALS } from '@/types/entities';
+import { NetworkEntity } from '@/types/entities';
 import { Connection } from '@/types/connections';
+import { generateDeviceData } from '@/lib/device-data-generator';
+import type { DeviceStatus } from '@/types/simulation-data';
 
 // ===== CYBERPUNK COLOR PALETTE =====
 const CYBER_COLORS = {
@@ -39,7 +41,12 @@ const PROTOCOL_COLORS: Record<string, string> = {
     'MALWARE': '#DC2626'
 };
 
-export function CyberpunkCanvas() {
+// Props interface for external mouse position callback
+interface CyberpunkCanvasProps {
+    onMousePositionChange?: (x: number, y: number) => void;
+}
+
+export function CyberpunkCanvas({ onMousePositionChange }: CyberpunkCanvasProps = {}) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameRef = useRef<number>(0);
     const timeRef = useRef<number>(0);
@@ -50,55 +57,161 @@ export function CyberpunkCanvas() {
         viewport,
         setViewportOffset,
         setDragging,
-        networkHealth
+        networkHealth,
+        hoveredNodeId,
+        setHoveredNode,
+        openInspector,
     } = useSimulationStore();
 
     // Mouse drag state
     const dragStartRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number } | null>(null);
+    const [isHoveringNode, setIsHoveringNode] = useState(false);
 
-    // Handle resize
+    // Handle resize with ResizeObserver for proper initial sizing
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const handleResize = () => {
-            const parent = canvas.parentElement;
-            if (parent) {
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width = parent.clientWidth * dpr;
-                canvas.height = parent.clientHeight * dpr;
-                canvas.style.width = `${parent.clientWidth}px`;
-                canvas.style.height = `${parent.clientHeight}px`;
+        const parent = canvas.parentElement;
+        if (!parent) return;
+
+        const updateCanvasSize = () => {
+            const dpr = window.devicePixelRatio || 1;
+            const width = parent.clientWidth;
+            const height = parent.clientHeight;
+
+            // Only update if we have valid dimensions
+            if (width > 0 && height > 0) {
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
                 const ctx = canvas.getContext('2d');
                 if (ctx) ctx.scale(dpr, dpr);
             }
         };
 
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        // Use ResizeObserver to detect when parent has valid dimensions
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+                    updateCanvasSize();
+                }
+            }
+        });
+
+        resizeObserver.observe(parent);
+
+        // Also handle window resize for DPR changes
+        window.addEventListener('resize', updateCanvasSize);
+
+        // Initial size update
+        updateCanvasSize();
+
+        return () => {
+            resizeObserver.disconnect();
+            window.removeEventListener('resize', updateCanvasSize);
+        };
     }, []);
+
+    // Node hit detection
+    const findNodeAtPosition = useCallback((screenX: number, screenY: number): NetworkEntity | null => {
+        const canvas = canvasRef.current;
+        if (!canvas) return null;
+
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const width = canvas.width / dpr;
+        const height = canvas.height / dpr;
+
+        // Convert screen coords to canvas coords (accounting for viewport offset)
+        const canvasX = (screenX - rect.left) - viewport.offsetX - width / 2;
+        const canvasY = (screenY - rect.top) - viewport.offsetY - height / 2;
+
+        const NODE_RADIUS = 40; // Hit area radius
+
+        for (const [_id, entity] of entities) {
+            const dx = canvasX - entity.position.x;
+            const dy = canvasY - entity.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance <= NODE_RADIUS) {
+                return entity;
+            }
+        }
+        return null;
+    }, [entities, viewport]);
 
     // Mouse handlers
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        // Only start dragging if not clicking on a node
+        const node = findNodeAtPosition(e.clientX, e.clientY);
+        if (node) return; // Don't drag when clicking nodes
+
         dragStartRef.current = {
             x: e.clientX, y: e.clientY,
             offsetX: viewport.offsetX, offsetY: viewport.offsetY
         };
         setDragging(true);
-    }, [viewport, setDragging]);
+    }, [viewport, setDragging, findNodeAtPosition]);
 
     const handleMouseMove = useCallback((e: React.MouseEvent) => {
+        // Update external position callback
+        onMousePositionChange?.(e.clientX, e.clientY);
+
+        // Check for node hover
+        const node = findNodeAtPosition(e.clientX, e.clientY);
+        if (node) {
+            if (hoveredNodeId !== node.id) {
+                setHoveredNode(node.id);
+            }
+            setIsHoveringNode(true);
+        } else {
+            if (hoveredNodeId !== null) {
+                setHoveredNode(null);
+            }
+            setIsHoveringNode(false);
+        }
+
+        // Handle dragging
         if (!dragStartRef.current) return;
         const dx = e.clientX - dragStartRef.current.x;
         const dy = e.clientY - dragStartRef.current.y;
         setViewportOffset(dragStartRef.current.offsetX + dx, dragStartRef.current.offsetY + dy);
-    }, [setViewportOffset]);
+    }, [setViewportOffset, findNodeAtPosition, hoveredNodeId, setHoveredNode, onMousePositionChange]);
 
     const handleMouseUp = useCallback(() => {
         dragStartRef.current = null;
         setDragging(false);
     }, [setDragging]);
+
+    const handleMouseLeave = useCallback(() => {
+        dragStartRef.current = null;
+        setDragging(false);
+        setHoveredNode(null);
+        setIsHoveringNode(false);
+    }, [setDragging, setHoveredNode]);
+
+    const handleClick = useCallback((e: React.MouseEvent) => {
+        const node = findNodeAtPosition(e.clientX, e.clientY);
+        if (node) {
+            // Generate full device data and open inspector
+            const status: DeviceStatus = node.status === 'active' ? 'online'
+                : node.status === 'compromised' ? 'under_attack'
+                    : node.status === 'blocked' ? 'isolated'
+                        : 'online';
+
+            const deviceData = generateDeviceData(
+                node.id,
+                node.metadata?.label || node.id,
+                node.type,
+                node.metadata?.ip || '192.168.1.1',
+                status,
+                networkHealth
+            );
+            openInspector('device', deviceData);
+        }
+    }, [findNodeAtPosition, networkHealth, openInspector]);
 
     // ===== MAIN RENDER LOOP =====
     useEffect(() => {
@@ -155,14 +268,17 @@ export function CyberpunkCanvas() {
     }, [entities, connections, viewport, networkHealth]);
 
     return (
-        <canvas
-            ref={canvasRef}
-            className="absolute inset-0 cursor-grab active:cursor-grabbing"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-        />
+        <div className="relative w-full h-full overflow-hidden">
+            <canvas
+                ref={canvasRef}
+                className={`absolute inset-0 ${isHoveringNode ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'}`}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
+            />
+        </div>
     );
 }
 
@@ -405,7 +521,6 @@ function drawCyberConnection(
 
     const dx = x2 - x1;
     const dy = y2 - y1;
-    const length = Math.sqrt(dx * dx + dy * dy);
     const angle = Math.atan2(dy, dx);
 
     // Offset from node edges

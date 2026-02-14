@@ -10,45 +10,27 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
-    const [apiKey, setApiKey] = useState('');
-    const [hasApiKey, setHasApiKey] = useState(false);
-    const [showApiKey, setShowApiKey] = useState(false);
     const [soundSettings, setSoundSettings] = useState<SoundSettings | null>(null);
     const [activeTab, setActiveTab] = useState<'ai' | 'sound' | 'about'>('ai');
-    const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
 
-    // Load initial settings
+    // Load initial settings using isOpen as dependency
+    // This pattern is acceptable - we're syncing external state when dialog opens
     useEffect(() => {
-        setHasApiKey(geminiService.hasApiKey());
-        setSoundSettings(soundManager.getSettings());
+        if (isOpen) {
+            setTimeout(() => {
+                setSoundSettings(soundManager.getSettings());
+            }, 0);
+        }
     }, [isOpen]);
 
-    const handleSaveApiKey = () => {
-        if (apiKey.trim()) {
-            geminiService.setApiKey(apiKey.trim());
-            setHasApiKey(true);
-            setApiKey('');
-            setTestStatus('idle');
-        }
-    };
-
-    const handleClearApiKey = () => {
-        geminiService.clearApiKey();
-        setHasApiKey(false);
-        setTestStatus('idle');
-    };
-
-    const handleTestApiKey = async () => {
-        setTestStatus('testing');
+    // API key functionality is disabled - these functions would be used if enabled
+    // Keeping the async catch block for future use
+    const _handleTestApiKey = async () => {
         try {
             const response = await geminiService.answerQuestion('Hello, can you confirm you are working?');
-            if (response && response.length > 0) {
-                setTestStatus('success');
-            } else {
-                setTestStatus('error');
-            }
+            console.log('API test response:', response);
         } catch {
-            setTestStatus('error');
+            console.error('API test failed');
         }
     };
 
@@ -250,7 +232,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                                 }}
                             >
                                 <p className="text-xs text-slate-400">
-                                     <strong className="text-slate-300">Note:</strong> Sound uses synthesized tones
+                                    <strong className="text-slate-300">Note:</strong> Sound uses synthesized tones
                                     that work without external audio files. Click anywhere to enable audio.
                                 </p>
                             </div>

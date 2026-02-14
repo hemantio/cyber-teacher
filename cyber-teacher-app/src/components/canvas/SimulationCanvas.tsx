@@ -24,7 +24,7 @@ export function SimulationCanvas() {
     const localPacketsRef = useRef<Map<string, LocalPacket>>(new Map());
     const fpsRef = useRef<{ frames: number; lastTime: number; fps: number }>({
         frames: 0,
-        lastTime: performance.now(),
+        lastTime: 0,
         fps: 60
     });
 
@@ -81,6 +81,11 @@ export function SimulationCanvas() {
 
     // Mouse drag state
     const dragStartRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number } | null>(null);
+
+    // Initialize fpsRef.lastTime after mount
+    useEffect(() => {
+        fpsRef.current.lastTime = performance.now();
+    }, []);
 
     // Handle resize with debouncing for performance
     useEffect(() => {

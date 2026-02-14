@@ -10,8 +10,6 @@ export function LeftPanel() {
         setCurrentStep,
         setHighlight,
         clearHighlight,
-        isPlaying,
-        playbackSpeed,
         setPlaybackSpeed
     } = useSimulationStore();
 
@@ -139,7 +137,7 @@ export function LeftPanel() {
                             <div
                                 key={step.id}
                                 className={`flex items-start gap-2 p-2 rounded-lg mb-1 transition-all cursor-pointer ${isActive ? 'bg-cyan-500/15' :
-                                        isHovered && canReplay ? 'bg-slate-700/30' : ''
+                                    isHovered && canReplay ? 'bg-slate-700/30' : ''
                                     }`}
                                 style={{
                                     borderLeft: isActive
@@ -165,8 +163,8 @@ export function LeftPanel() {
                                                 : '#1E293B',
                                         color: isCompleted || isActive ? '#0F172A' : '#64748B',
                                         border: `1px solid ${isCompleted ? '#22C55E' :
-                                                isActive ? '#22D3EE' :
-                                                    '#475569'
+                                            isActive ? '#22D3EE' :
+                                                '#475569'
                                             }`,
                                         boxShadow: isActive ? '0 0 10px rgba(34, 211, 238, 0.5)' : 'none'
                                     }}
@@ -251,7 +249,7 @@ export function LeftPanel() {
                                     }}
                                 >
                                     <p className="text-xs font-medium mb-1" style={{ color: '#8B5CF6' }}>
-                                         Did you know?
+                                        Did you know?
                                     </p>
                                     <p
                                         className="text-xs leading-relaxed"

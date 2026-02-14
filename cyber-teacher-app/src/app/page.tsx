@@ -3,12 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Navigation } from '@/components/layout/Navigation';
-import { useSimulationStore } from '@/store/simulation-store';
-
 export default function HomePage() {
   const [systemStatus, setSystemStatus] = useState<'initializing' | 'ready' | 'connecting'>('initializing');
   const [elapsedTime, setElapsedTime] = useState(0);
-  const { loadLesson } = useSimulationStore();
 
   // Initialize timer
   useEffect(() => {
@@ -86,7 +83,7 @@ export default function HomePage() {
               color: '#22D3EE'
             }}
           >
-             Start Lesson 1
+            Start Lesson 1
           </Link>
 
           <Link
@@ -98,7 +95,7 @@ export default function HomePage() {
               color: '#A78BFA'
             }}
           >
-             Campaign
+            Campaign
           </Link>
         </div>
       </div>

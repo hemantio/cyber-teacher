@@ -32,14 +32,18 @@ export function InspectorPanel({
     const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        setTimeout(() => {
+            setMounted(true);
+        }, 0);
         return () => setMounted(false);
     }, []);
 
     // Handle open/close animations
     useEffect(() => {
         if (open) {
-            setShouldRender(true);
+            setTimeout(() => {
+                setShouldRender(true);
+            }, 0);
 
             // Animate in
             requestAnimationFrame(() => {
@@ -178,8 +182,8 @@ export function InspectorTabs({ tabs, activeTab, onTabChange }: InspectorTabsPro
                         key={tab.id}
                         onClick={() => onTabChange(tab.id)}
                         className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all whitespace-nowrap ${isActive
-                                ? 'text-cyan-400 border-b-2 border-cyan-400'
-                                : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
+                            ? 'text-cyan-400 border-b-2 border-cyan-400'
+                            : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
                             }`}
                         style={isActive ? { marginBottom: '-1px' } : {}}
                     >

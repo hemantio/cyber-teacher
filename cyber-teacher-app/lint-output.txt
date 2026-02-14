@@ -1,0 +1,172 @@
+
+> cyber-teacher-app@0.1.0 lint
+> eslint
+
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\app\sandbox\page.tsx
+  162:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\app\sandbox\page.tsx:162:9
+  160 |         }, 100);
+  161 |
+> 162 |         addSystemLog('info', 'System initialized. Network topology loaded.', '#22D3EE');
+      |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  163 |         addSystemLog('info', 'DHCP Request from User PC', '#22D3EE');
+  164 |         addSystemLog('info', 'DHCP | Status: OK', '#22C55E');
+  165 |  react-hooks/set-state-in-effect
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\canvas\CyberpunkCanvas.tsx
+  133:21  warning  '_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\canvas\renderers\ConnectionRenderer.ts
+  28:11  warning  'length' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\inspector\DeviceInspector.tsx
+  114:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\inspector\DeviceInspector.tsx:114:9
+  112 |     // Reset tab when device changes
+  113 |     useEffect(() => {
+> 114 |         setActiveTab('overview');
+      |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  115 |     }, [deviceId]);
+  116 |
+  117 |     if (!device) return null;  react-hooks/set-state-in-effect
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\inspector\InspectorPanel.tsx
+  35:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\inspector\InspectorPanel.tsx:35:9
+  33 |
+  34 |     useEffect(() => {
+> 35 |         setMounted(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  36 |         return () => setMounted(false);
+  37 |     }, []);
+  38 |                                                         react-hooks/set-state-in-effect
+  42:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\inspector\InspectorPanel.tsx:42:13
+  40 |     useEffect(() => {
+  41 |         if (open) {
+> 42 |             setShouldRender(true);
+     |             ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  43 |
+  44 |             // Animate in
+  45 |             requestAnimationFrame(() => {  react-hooks/set-state-in-effect
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\BottomControls.tsx
+  195:8  warning  React Hook useEffect has missing dependencies: 'currentLesson', 'currentStepIndex', and 'spawnPacketsForStep'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\RightPanel.tsx
+  116:37  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\SettingsPanel.tsx
+  20:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\SettingsPanel.tsx:20:13
+  18 |     useEffect(() => {
+  19 |         if (isOpen) {
+> 20 |             setSoundSettings(soundManager.getSettings());
+     |             ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |         }
+  22 |     }, [isOpen]);
+  23 |  react-hooks/set-state-in-effect
+  26:11  warning  '_handleTestApiKey' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\Tooltip.tsx
+  38:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\Tooltip.tsx:38:9
+  36 |     // Handle mounting for portal
+  37 |     useEffect(() => {
+> 38 |         setMounted(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  39 |         return () => setMounted(false);
+  40 |     }, []);
+  41 |                                                  react-hooks/set-state-in-effect
+  86:17  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\Tooltip.tsx:86:17
+  84 |                 }, delay);
+  85 |             } else {
+> 86 |                 setShouldRender(true);
+     |                 ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  87 |             }
+  88 |         } else {
+  89 |             clearTimeout(showTimeoutRef.current);  react-hooks/set-state-in-effect
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\attack-engine.ts
+   8:5  warning  'AttackPhase' is defined but never used  @typescript-eslint/no-unused-vars
+  10:5  warning  'Node' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\defense-engine.ts
+  9:5  warning  'Packet' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\lesson-runtime.ts
+  12:5  warning  'createDefaultLink' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\metrics-engine.ts
+  15:11  warning  'activeNodes' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  21:11  warning  'totalNodes' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\protocol-engine.ts
+  7:5  warning  'PacketProtocol' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\hooks\use-keyboard-shortcuts.ts
+  24:9   warning  'playbackSpeed' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  26:9   warning  'currentStepIndex' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  42:15  warning  'hasShift' is assigned a value but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\lib\device-data-generator.ts
+  12:5  warning  'SecurityLevel' is defined but never used  @typescript-eslint/no-unused-vars
+  14:5  warning  'ProcessInfo' is defined but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\lib\sound-engine.ts
+  141:22  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  258:22  warning  'e' is defined but never used      @typescript-eslint/no-unused-vars
+
+Γ£û 26 problems (8 errors, 18 warnings)
+
