@@ -59,15 +59,23 @@ export function SecurityGuard({ children }: SecurityGuardProps) {
             debugger;
         }, 500);
 
-        // 3. Shortcut Blocking
+        // 3. Shortcut Blocking (Extended for Sniffers/Scrapers)
         const handleKeyDown = (e: KeyboardEvent) => {
-            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-            if (
-                e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-                (e.ctrlKey && e.key === 'u')
-            ) {
+            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (Source/Inspect)
+            // Ctrl+S (Save), Ctrl+P (Print)
+            const isInspect = e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u');
+            const isScrape = (e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p');
+
+            if (isInspect || isScrape) {
                 e.preventDefault();
+                triggerIce();
+            }
+        };
+
+        // 4. Copy Detection (Scraping deterrent)
+        const handleCopy = () => {
+            const selection = window.getSelection()?.toString();
+            if (selection && selection.length > 500) {
                 triggerIce();
             }
         };
@@ -81,11 +89,13 @@ export function SecurityGuard({ children }: SecurityGuardProps) {
         window.addEventListener('resize', checkDevTools);
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('contextmenu', handleContextMenu);
+        window.addEventListener('copy', handleCopy);
 
         return () => {
             window.removeEventListener('resize', checkDevTools);
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('contextmenu', handleContextMenu);
+            window.removeEventListener('copy', handleCopy);
             clearInterval(debuggerTimer);
         };
     }, [triggerIce]);

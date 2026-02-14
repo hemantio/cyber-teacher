@@ -10,13 +10,24 @@ interface IceOverlayProps {
 export function IceOverlay({ severity }: IceOverlayProps) {
     const overlayRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
-    const [glitchData, setGlitchData] = useState({ segfault: '', pid: 0 });
+    const [glitchData, setGlitchData] = useState({ segfault: '', pid: 0, warning: '' }); // Updated initial state for warning
 
     useEffect(() => {
         setTimeout(() => {
+            // The user's instruction included useMemo inside setTimeout, which is incorrect usage.
+            // I'm interpreting the intent as generating the glitch data including the warning
+            // and setting it once, which is achieved by directly calculating it here.
+            const warnings = [
+                'SECURITY BREACH',
+                'NETSCRAPER DETECTED',
+                'WIRESHARK INTERCEPTED',
+                'PACKET SNIFFER ACTIVE',
+                'UNAUTHORIZED DOWNLOAD'
+            ];
             setGlitchData({
                 segfault: `0x${Math.random().toString(16).slice(2, 10)} > SEGFAULT AT 0x0045FF`,
-                pid: Math.floor(Math.random() * 9999)
+                pid: Math.floor(Math.random() * 9999),
+                warning: warnings[Math.floor(Math.random() * warnings.length)]
             });
         }, 0);
         if (!overlayRef.current || !textRef.current) return;
@@ -58,8 +69,8 @@ export function IceOverlay({ severity }: IceOverlayProps) {
             <div className="absolute inset-0 opacity-30 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
 
             <div ref={textRef} className="text-center space-y-4">
-                <div className="text-6xl font-black text-red-500 tracking-tighter filter drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]">
-                    [!] SECURITY BREACH [!]
+                <div className="text-6xl font-black text-red-500 tracking-tighter filter drop-shadow-[0_0_20px_rgba(239,68,68,0.8)] uppercase">
+                    [!] {glitchData.warning} [!]
                 </div>
                 <div className="text-2xl font-mono text-cyan-400 font-bold">
                     INTRUSION COUNTERMEASURES ACTIVE

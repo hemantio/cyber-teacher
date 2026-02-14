@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export function HackerTroll() {
-    const [phase, setPhase] = useState<'kernel' | 'troll'>('kernel');
+    const [phase, setPhase] = useState<'kernel' | 'troll' | 'bios'>('kernel');
     const [memoryDumpPercent, setMemoryDumpPercent] = useState(0);
 
     useEffect(() => {
@@ -16,6 +16,21 @@ export function HackerTroll() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        if (phase === 'troll') {
+            const timer = setTimeout(() => {
+                setPhase('bios');
+            }, 6000);
+            return () => clearTimeout(timer);
+        }
+        if (phase === 'bios') {
+            const timer = setTimeout(() => {
+                window.location.reload();
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [phase]);
+
     if (phase === 'kernel') {
         return (
             <div className="fixed inset-0 z-[11000] bg-blue-700 text-white font-mono p-10 flex flex-col justify-center">
@@ -24,6 +39,30 @@ export function HackerTroll() {
                 <p className="mb-4">Reason: INTRUSION_ATTEMPT_FROM_UNAUTHORIZED_ENTITY</p>
                 <p className="mb-8">Memory dump in progress... {memoryDumpPercent}% complete</p>
                 <p className="text-blue-200">*** STOP: 0x0000007B (0xF78D2524, 0xC0000034, 0x00000000, 0x00000000)</p>
+            </div>
+        );
+    }
+
+    if (phase === 'bios') {
+        return (
+            <div className="fixed inset-0 z-[11000] bg-black text-white font-mono p-10 flex flex-col items-start justify-start border-4 border-gray-800">
+                <div className="w-full border-b border-gray-700 mb-6 pb-2 flex justify-between">
+                    <span className="font-bold">Cyber-BIOS v2.0.77</span>
+                    <span>{new Date().toLocaleDateString()}</span>
+                </div>
+
+                <div className="space-y-2 animate-pulse">
+                    <p className="text-green-400">Initialize CPU............ OK</p>
+                    <p className="text-green-400">Memory Test............... 64512KB OK</p>
+                    <p className="text-red-500 font-bold underline">ERROR: PACKET_SNIFFER_DETECTED (0x00E4)</p>
+                    <p className="text-red-500 font-bold">SYSTEM INTEGRITY COMPROMISED</p>
+                    <p className="mt-8 text-white">RESTARTING SYSTEM TO PURGE UNKNOWN INTERFACE...</p>
+                    <p className="mt-4">Press DEL to enter Setup (BLOCKED)</p>
+                </div>
+
+                <div className="mt-auto text-gray-500 text-[10px]">
+                    (C) 2026 CYBER TEACHER CORP. ALL RIGHTS RESERVED.
+                </div>
             </div>
         );
     }
