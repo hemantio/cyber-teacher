@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, ReactNode } from 'react';
 import { IceOverlay } from './IceOverlay';
-import { HackerTroll } from './HackerTroll';
 import { soundManager } from '@/lib/sound-engine';
 
 interface SecurityGuardProps {
@@ -36,7 +35,7 @@ export function SecurityGuard({ children }: SecurityGuardProps) {
 
     useEffect(() => {
         // 1. DevTools Detection (Threshold method)
-        const threshold = 160;
+        const threshold = 250;
         const checkDevTools = () => {
             const widthDiff = window.outerWidth - window.innerWidth;
             const heightDiff = window.outerHeight - window.innerHeight;
@@ -50,13 +49,11 @@ export function SecurityGuard({ children }: SecurityGuardProps) {
         let lastTime = Date.now();
         const debuggerTimer = setInterval(() => {
             const currentTime = Date.now();
-            if (currentTime - lastTime > 100) {
+            if (currentTime - lastTime > 1000) {
                 // Potential debugger pause detected
                 triggerIce();
             }
             lastTime = currentTime;
-            // debugger;
-            debugger;
         }, 500);
 
         // 3. Shortcut Blocking (Extended for Sniffers/Scrapers)
@@ -104,7 +101,6 @@ export function SecurityGuard({ children }: SecurityGuardProps) {
         <>
             {children}
             {isIceActive && <IceOverlay severity={breachLevel} />}
-            {breachLevel >= 5 && <HackerTroll />}
         </>
     );
 }
