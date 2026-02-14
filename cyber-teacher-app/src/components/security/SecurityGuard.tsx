@@ -34,68 +34,9 @@ export function SecurityGuard({ children }: SecurityGuardProps) {
     }, [isIceActive]);
 
     useEffect(() => {
-        // 1. DevTools Detection (Threshold method)
-        const threshold = 250;
-        const checkDevTools = () => {
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-
-            if (widthDiff > threshold || heightDiff > threshold) {
-                triggerIce();
-            }
-        };
-
-        // 2. Debugger Detection
-        let lastTime = Date.now();
-        const debuggerTimer = setInterval(() => {
-            const currentTime = Date.now();
-            if (currentTime - lastTime > 1000) {
-                // Potential debugger pause detected
-                triggerIce();
-            }
-            lastTime = currentTime;
-        }, 500);
-
-        // 3. Shortcut Blocking (Extended for Sniffers/Scrapers)
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (Source/Inspect)
-            // Ctrl+S (Save), Ctrl+P (Print)
-            const isInspect = e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u');
-            const isScrape = (e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p');
-
-            if (isInspect || isScrape) {
-                e.preventDefault();
-                triggerIce();
-            }
-        };
-
-        // 4. Copy Detection (Scraping deterrent)
-        const handleCopy = () => {
-            const selection = window.getSelection()?.toString();
-            if (selection && selection.length > 500) {
-                triggerIce();
-            }
-        };
-
-        // 4. Context Menu Detection
-        const handleContextMenu = (e: MouseEvent) => {
-            e.preventDefault();
-            triggerIce();
-        };
-
-        window.addEventListener('resize', checkDevTools);
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('contextmenu', handleContextMenu);
-        window.addEventListener('copy', handleCopy);
-
-        return () => {
-            window.removeEventListener('resize', checkDevTools);
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('contextmenu', handleContextMenu);
-            window.removeEventListener('copy', handleCopy);
-            clearInterval(debuggerTimer);
-        };
-    }, [triggerIce]);
+        // Active sniffing logic removed as requested to prioritize stability.
+        // The component now only serves as a container for safety effects triggered manually.
+    }, []);
 
     return (
         <>
