@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createAppToken, getCorsHeaders } from '@/lib/security';
 
+export const dynamic = 'force-static';
+
 /**
  * Token Generation Endpoint
  * Creates a temporary session token for API access
