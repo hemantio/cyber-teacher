@@ -28,6 +28,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SecurityGuard } from "@/components/security/SecurityGuard";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,7 +41,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
         suppressHydrationWarning
       >
-        {children}
+        <SecurityGuard>
+          {children}
+        </SecurityGuard>
         <Analytics />
       </body>
     </html>

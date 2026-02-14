@@ -1,0 +1,89 @@
+
+> cyber-teacher-app@0.1.0 lint
+> eslint
+
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\canvas\CyberpunkCanvas.tsx
+  133:21  warning  '_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\canvas\renderers\ConnectionRenderer.ts
+  28:11  warning  'length' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\HackerTroll.tsx
+  8:56  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\HackerTroll.tsx:8:56
+   6 |     const [phase, setPhase] = useState<'kernel' | 'troll'>('kernel');
+   7 |
+>  8 |     const memoryDumpPercent = useMemo(() => Math.floor(Math.random() * 100), []);
+     |                                                        ^^^^^^^^^^^^^ Cannot call impure function
+   9 |
+  10 |     useEffect(() => {
+  11 |         const timer = setTimeout(() => {  react-hooks/purity
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\IceOverlay.tsx
+  15:24  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\IceOverlay.tsx:15:24
+  13 |
+  14 |     const glitchData = useMemo(() => ({
+> 15 |         segfault: `0x${Math.random().toString(16).slice(2, 10)} > SEGFAULT AT 0x0045FF`,
+     |                        ^^^^^^^^^^^^^ Cannot call impure function
+  16 |         pid: Math.floor(Math.random() * 9999)
+  17 |     }), []);
+  18 |                         react-hooks/purity
+  16:25  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\IceOverlay.tsx:16:25
+  14 |     const glitchData = useMemo(() => ({
+  15 |         segfault: `0x${Math.random().toString(16).slice(2, 10)} > SEGFAULT AT 0x0045FF`,
+> 16 |         pid: Math.floor(Math.random() * 9999)
+     |                         ^^^^^^^^^^^^^ Cannot call impure function
+  17 |     }), []);
+  18 |
+  19 |     useEffect(() => {  react-hooks/purity
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\BottomControls.tsx
+  195:8  warning  React Hook useEffect has missing dependencies: 'currentLesson', 'currentStepIndex', and 'spawnPacketsForStep'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\SettingsPanel.tsx
+  28:11  warning  '_handleTestApiKey' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\attack-engine.ts
+   8:5  warning  'AttackPhase' is defined but never used  @typescript-eslint/no-unused-vars
+  10:5  warning  'Node' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\defense-engine.ts
+  9:5  warning  'Packet' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\lesson-runtime.ts
+  12:5  warning  'createDefaultLink' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\metrics-engine.ts
+  15:11  warning  'activeNodes' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  21:11  warning  'totalNodes' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\protocol-engine.ts
+  7:5  warning  'PacketProtocol' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\hooks\use-keyboard-shortcuts.ts
+  24:9   warning  'playbackSpeed' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  26:9   warning  'currentStepIndex' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  42:15  warning  'hasShift' is assigned a value but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\lib\device-data-generator.ts
+  12:5  warning  'SecurityLevel' is defined but never used  @typescript-eslint/no-unused-vars
+  14:5  warning  'ProcessInfo' is defined but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\lib\sound-engine.ts
+  143:22  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  262:22  warning  'e' is defined but never used      @typescript-eslint/no-unused-vars
+
+Γ£û 21 problems (3 errors, 18 warnings)
+

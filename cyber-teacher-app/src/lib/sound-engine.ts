@@ -47,6 +47,8 @@ const SOUNDS = {
     // Victory/Defeat
     victory: { src: '/sounds/victory.mp3', category: 'sfx' as SoundCategory },
     defeat: { src: '/sounds/defeat.mp3', category: 'sfx' as SoundCategory },
+    ice: { src: '/sounds/ice.mp3', category: 'sfx' as SoundCategory },
+    glitch: { src: '/sounds/glitch.mp3', category: 'sfx' as SoundCategory },
 } as const;
 
 type SoundName = keyof typeof SOUNDS;
@@ -227,6 +229,8 @@ class SoundManager {
             heal: { freq: 600, duration: 0.25, type: 'sine' },
             victory: { freq: 880, duration: 0.5, type: 'sine' },
             defeat: { freq: 220, duration: 0.8, type: 'sawtooth' },
+            ice: { freq: 15, duration: 2.0, type: 'square' }, // Ultra low frequency for vibrating effect
+            glitch: { freq: 2000, duration: 0.1, type: 'sawtooth' },
         };
 
         const config = configs[name] || { freq: 440, duration: 0.1, type: 'sine' as OscillatorType };

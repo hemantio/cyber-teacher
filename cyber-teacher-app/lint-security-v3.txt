@@ -1,0 +1,87 @@
+
+> cyber-teacher-app@0.1.0 lint
+> eslint
+
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\canvas\CyberpunkCanvas.tsx
+  133:21  warning  '_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\canvas\renderers\ConnectionRenderer.ts
+  28:11  warning  'length' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\HackerTroll.tsx
+   3:31  warning  'useMemo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  10:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\HackerTroll.tsx:10:9
+   8 |
+   9 |     useEffect(() => {
+> 10 |         setMemoryDumpPercent(Math.floor(Math.random() * 100));
+     |         ^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  11 |         const timer = setTimeout(() => {
+  12 |             setPhase('troll');
+  13 |         }, 3000);  react-hooks/set-state-in-effect
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\IceOverlay.tsx
+   3:29  warning  'useMemo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  16:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\security\IceOverlay.tsx:16:9
+  14 |
+  15 |     useEffect(() => {
+> 16 |         setGlitchData({
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  17 |             segfault: `0x${Math.random().toString(16).slice(2, 10)} > SEGFAULT AT 0x0045FF`,
+  18 |             pid: Math.floor(Math.random() * 9999)
+  19 |         });  react-hooks/set-state-in-effect
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\BottomControls.tsx
+  195:8  warning  React Hook useEffect has missing dependencies: 'currentLesson', 'currentStepIndex', and 'spawnPacketsForStep'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\components\ui\SettingsPanel.tsx
+  28:11  warning  '_handleTestApiKey' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\attack-engine.ts
+   8:5  warning  'AttackPhase' is defined but never used  @typescript-eslint/no-unused-vars
+  10:5  warning  'Node' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\defense-engine.ts
+  9:5  warning  'Packet' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\lesson-runtime.ts
+  12:5  warning  'createDefaultLink' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\metrics-engine.ts
+  15:11  warning  'activeNodes' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  21:11  warning  'totalNodes' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\engine\protocol-engine.ts
+  7:5  warning  'PacketProtocol' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\hooks\use-keyboard-shortcuts.ts
+  24:9   warning  'playbackSpeed' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  26:9   warning  'currentStepIndex' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  42:15  warning  'hasShift' is assigned a value but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\lib\device-data-generator.ts
+  12:5  warning  'SecurityLevel' is defined but never used  @typescript-eslint/no-unused-vars
+  14:5  warning  'ProcessInfo' is defined but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\HEMANT\Cyber Teacher\cyber-teacher-app\src\lib\sound-engine.ts
+  143:22  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  262:22  warning  'e' is defined but never used      @typescript-eslint/no-unused-vars
+
+Γ£û 22 problems (2 errors, 20 warnings)
+
