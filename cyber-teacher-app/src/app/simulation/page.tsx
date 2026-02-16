@@ -26,9 +26,16 @@ export default function SimulationPage() {
         setShowHelp(prev => !prev);
     }, []);
 
+    // Close all modals
+    const closeModals = useCallback(() => {
+        setShowHelp(false);
+        setShowQuiz(false);
+    }, []);
+
     // Keyboard shortcuts
     useKeyboardShortcuts({
         onToggleHelp: toggleHelp,
+        onCloseModals: closeModals,
     });
 
     const handleQuizComplete = (score: number) => {
@@ -54,21 +61,21 @@ export default function SimulationPage() {
                     className={`flex-1 py-2 text-xs font-medium transition-all ${activePanel === 'left' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-400'
                         }`}
                 >
-                     Lesson
+                    Lesson
                 </button>
                 <button
                     onClick={() => setActivePanel('canvas')}
                     className={`flex-1 py-2 text-xs font-medium transition-all ${activePanel === 'canvas' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-400'
                         }`}
                 >
-                     Simulation
+                    Simulation
                 </button>
                 <button
                     onClick={() => setActivePanel('right')}
                     className={`flex-1 py-2 text-xs font-medium transition-all ${activePanel === 'right' ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-400'
                         }`}
                 >
-                     Actions
+                    Actions
                 </button>
             </div>
 

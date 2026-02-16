@@ -12,13 +12,10 @@ export function calculateMetrics(world: WorldState): WorldMetrics {
     const infectedNodes = nodes.filter(n => n.status === 'infected').length;
     const compromisedNodes = nodes.filter(n => n.status === 'compromised').length;
     const quarantinedNodes = nodes.filter(n => n.status === 'quarantined').length;
-    const activeNodes = nodes.filter(n =>
-        n.status === 'active' || n.status === 'idle'
-    ).length;
 
     // Calculate network health
     // Each overloaded node = -10, infected = -15, compromised = -20, quarantined = -5
-    const totalNodes = nodes.length || 1;
+
     const healthPenalty =
         (overloadedNodes * 10) +
         (infectedNodes * 15) +
@@ -166,6 +163,9 @@ export function updateLinkLoads(world: WorldState): WorldState {
 
     // Count packets on each link
     for (const packet of world.packets) {
+        // BUG-5 FIX: Explicit bounds check before accessing path
+        if (packet.currentHopIndex >= packet.path.length - 1) continue;
+
         const currentNode = packet.path[packet.currentHopIndex];
         const nextNode = packet.path[packet.currentHopIndex + 1];
 

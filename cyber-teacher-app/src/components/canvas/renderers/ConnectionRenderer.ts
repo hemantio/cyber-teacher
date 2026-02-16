@@ -25,7 +25,6 @@ export function drawConnection(
 
     const dx = targetPos.x - sourcePos.x;
     const dy = targetPos.y - sourcePos.y;
-    const length = Math.sqrt(dx * dx + dy * dy);
     const angle = Math.atan2(dy, dx);
 
     // Offset from entity centers to edges

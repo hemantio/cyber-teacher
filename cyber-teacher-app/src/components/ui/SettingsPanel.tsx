@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { geminiService } from '@/lib/gemini-service';
 import { soundManager, SoundCategory, SoundSettings } from '@/lib/sound-engine';
 
 interface SettingsPanelProps {
@@ -22,17 +21,6 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             }, 0);
         }
     }, [isOpen]);
-
-    // API key functionality is disabled - these functions would be used if enabled
-    // Keeping the async catch block for future use
-    const _handleTestApiKey = async () => {
-        try {
-            const response = await geminiService.answerQuestion('Hello, can you confirm you are working?');
-            console.log('API test response:', response);
-        } catch {
-            console.error('API test failed');
-        }
-    };
 
     const handleVolumeChange = (category: SoundCategory, volume: number) => {
         soundManager.setVolume(category, volume);

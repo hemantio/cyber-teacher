@@ -140,7 +140,7 @@ class SoundManager {
                 const arrayBuffer = await response.arrayBuffer();
                 const audioBuffer = await this.audioContext!.decodeAudioData(arrayBuffer);
                 this.audioBuffers.set(name, audioBuffer);
-            } catch (error) {
+            } catch {
                 // Silently fail - sounds are optional
                 console.debug(`Could not load sound: ${name}`);
             }
@@ -259,7 +259,7 @@ class SoundManager {
         if (node) {
             try {
                 node.stop();
-            } catch (e) {
+            } catch {
                 // Already stopped
             }
             this.activeNodes.delete(id);

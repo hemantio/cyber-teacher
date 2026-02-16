@@ -4,7 +4,6 @@
 import {
     WorldState,
     Packet,
-    PacketProtocol,
     Node,
     EventLog
 } from './world-state';

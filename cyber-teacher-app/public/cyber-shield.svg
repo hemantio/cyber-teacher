@@ -1,0 +1,50 @@
+<svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Glow Filters -->
+  <defs>
+    <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-red" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Main Shield Shape -->
+  <path d="M300 50 L500 150 V300 C500 450 300 550 300 550 C300 550 100 450 100 300 V150 L300 50Z" 
+        stroke="#00F3FF" stroke-width="8" fill="rgba(5, 10, 21, 0.6)" filter="url(#glow-cyan)"/>
+  
+  <!-- Inner Circuitry -->
+  <path d="M300 100 L450 175 V290 C450 400 300 480 300 480 C300 480 150 400 150 290 V175 L300 100Z" 
+        stroke="#00F3FF" stroke-width="4" stroke-opacity="0.5" fill="none"/>
+        
+  <!-- Core Node -->
+  <circle cx="300" cy="270" r="40" stroke="#FF003C" stroke-width="6" fill="none" filter="url(#glow-red)"/>
+  <circle cx="300" cy="270" r="15" fill="#FF003C" filter="url(#glow-red)">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Data Lines -->
+  <path d="M300 310 V480" stroke="#00F3FF" stroke-width="4" stroke-dasharray="10 5"/>
+  <path d="M260 270 H150" stroke="#00F3FF" stroke-width="4"/>
+  <path d="M340 270 H450" stroke="#00F3FF" stroke-width="4"/>
+  
+  <path d="M180 200 L240 240" stroke="#FF003C" stroke-width="3" filter="url(#glow-red)"/>
+  <path d="M420 200 L360 240" stroke="#FF003C" stroke-width="3" filter="url(#glow-red)"/>
+
+  <!-- Scanning Line Animation -->
+  <rect x="100" y="50" width="400" height="500" fill="url(#scan-gradient)" opacity="0.1" clip-path="url(#shield-clip)">
+     <animateTransform attributeName="transform" type="translate" from="0 -500" to="0 500" dur="3s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Text -->
+  <text x="300" y="420" font-family="monospace" font-size="24" fill="#00F3FF" text-anchor="middle" letter-spacing="4" filter="url(#glow-cyan)">CYBER TEACHER</text>
+
+</svg>

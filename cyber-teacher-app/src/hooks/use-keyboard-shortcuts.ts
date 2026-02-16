@@ -7,6 +7,7 @@ import { useSound } from './use-sound';
 interface KeyboardShortcutHandlers {
     onToggleHelp?: () => void;
     onToggleSettings?: () => void;
+    onCloseModals?: () => void;
 }
 
 /**
@@ -21,9 +22,7 @@ export function useKeyboardShortcuts(handlers?: KeyboardShortcutHandlers) {
         nextStep,
         previousStep,
         setPlaybackSpeed,
-        playbackSpeed,
         currentLesson,
-        currentStepIndex
     } = useSimulationStore();
 
     const { playClick } = useSound();
@@ -39,7 +38,6 @@ export function useKeyboardShortcuts(handlers?: KeyboardShortcutHandlers) {
 
         const key = event.key.toLowerCase();
         const hasCtrl = event.ctrlKey || event.metaKey;
-        const hasShift = event.shiftKey;
 
         switch (key) {
             // Playback controls
@@ -115,7 +113,10 @@ export function useKeyboardShortcuts(handlers?: KeyboardShortcutHandlers) {
 
             case 'escape': // Close modals
                 playClick();
-                handlers?.onToggleHelp?.();
+                // BUG-8 FIX: Only close, don't toggle open
+                if (handlers?.onCloseModals) {
+                    handlers.onCloseModals();
+                }
                 break;
 
             case 'home': // Jump to first step

@@ -6,12 +6,13 @@ import {
     ActiveDefense,
     DefenseType,
     Node,
-    Packet,
     EventLog
 } from './world-state';
 
+// Module-level counter for unique IDs
+let defenseIdCounter = 0;
 function generateId(prefix: string, seed: number, counter: number): string {
-    return `${prefix}-${seed}-${counter}`;
+    return `def-${prefix}-${seed}-${counter}-${defenseIdCounter++}`;
 }
 
 // ===== DEFENSE FACTORIES =====
@@ -61,14 +62,12 @@ export function applyFirewall(world: WorldState, defense: ActiveDefense): WorldS
     const newNodes = new Map(world.nodes);
     newNodes.set(defense.targetNode, updatedNode);
 
-    // Filter out malicious packets targeting this node
-    const blockedCount = world.packets.filter(
-        p => p.destination === defense.targetNode && p.malicious
-    ).length;
-
+    // BUG-9 FIX: Filter and count using same criteria (non-encrypted malicious)
     const filteredPackets = world.packets.filter(
         p => !(p.destination === defense.targetNode && p.malicious && !p.encrypted)
     );
+
+    const blockedCount = world.packets.length - filteredPackets.length;
 
     const logs = [...world.logs];
     if (blockedCount > 0) {

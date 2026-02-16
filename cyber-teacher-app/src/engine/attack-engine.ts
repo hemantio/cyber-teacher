@@ -5,14 +5,14 @@ import {
     WorldState,
     ActiveAttack,
     AttackType,
-    AttackPhase,
     Packet,
-    Node,
     EventLog
 } from './world-state';
 
+// Module-level counter to avoid ID collisions (BUG-6 FIX)
+let attackIdCounter = 0;
 function generateId(prefix: string, seed: number, counter: number): string {
-    return `${prefix}-${seed}-${counter}`;
+    return `atk-${prefix}-${seed}-${counter}-${attackIdCounter++}`;
 }
 
 // ===== ATTACK FACTORIES =====
@@ -379,7 +379,9 @@ function processMITMAttack(world: WorldState, attack: ActiveAttack): WorldState 
 export function processAttacks(world: WorldState): WorldState {
     let newWorld = world;
 
-    for (const attack of world.attacks) {
+    // BUG-4 FIX: Iterate newWorld.attacks to avoid stale state on multi-attack ticks
+    for (let i = 0; i < newWorld.attacks.length; i++) {
+        const attack = newWorld.attacks[i];
         if (attack.phase === 'complete' || attack.phase === 'blocked') {
             continue;
         }
@@ -406,7 +408,7 @@ export function processAttacks(world: WorldState): WorldState {
     // Remove completed attacks after some time
     const cleanedAttacks = newWorld.attacks.filter(attack => {
         if (attack.phase === 'complete' || attack.phase === 'blocked') {
-            return world.time - attack.startedAt < attack.duration + 20;
+            return newWorld.time - attack.startedAt < attack.duration + 20;
         }
         return true;
     });

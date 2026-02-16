@@ -130,7 +130,7 @@ export function CyberpunkCanvas({ onMousePositionChange }: CyberpunkCanvasProps 
 
         const NODE_RADIUS = 40; // Hit area radius
 
-        for (const [_id, entity] of entities) {
+        for (const [, entity] of entities) {
             const dx = canvasX - entity.position.x;
             const dy = canvasY - entity.position.y;
             const distance = Math.sqrt(dx * dx + dy * dy);

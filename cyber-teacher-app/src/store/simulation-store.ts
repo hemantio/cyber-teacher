@@ -246,7 +246,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
     // Playback actions
     play: () => set({ isPlaying: true, isPaused: false }),
-    pause: () => set({ isPaused: true }),
+    pause: () => set({ isPlaying: true, isPaused: true }),
     reset: () => set({
         currentStepIndex: 0,
         isPlaying: false,

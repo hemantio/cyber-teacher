@@ -57,6 +57,7 @@ export interface Node {
     packetsReceivedThisTick: number;
 }
 
+
 // ===== LINK TYPES =====
 export interface Link {
     id: string;

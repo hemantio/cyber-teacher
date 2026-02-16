@@ -192,7 +192,7 @@ export function BottomControls() {
         if (currentStep) {
             spawnPacketsForStep(currentStep);
         }
-    }, [isPlaying, isPaused]);
+    }, [isPlaying, isPaused, currentLesson, currentStepIndex, spawnPacketsForStep]);
 
     // Auto-advance to next step based on duration
     useEffect(() => {

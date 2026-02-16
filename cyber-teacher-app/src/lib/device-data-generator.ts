@@ -9,9 +9,7 @@ import type {
     DeviceSecurity,
     DeviceProcesses,
     DeviceEducation,
-    SecurityLevel,
     PortInfo,
-    ProcessInfo,
 } from '@/types/simulation-data';
 
 // ============================================================================

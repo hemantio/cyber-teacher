@@ -243,6 +243,13 @@ export class SimulationEngine {
     // ===== LINK OPERATIONS =====
     addLink(from: string, to: string): void {
         const id = `${from}-${to}`;
+        const reverseId = `${to}-${from}`;
+
+        // BUG-10 FIX: Check for duplicate links in either direction
+        if (this.world.links.has(id) || this.world.links.has(reverseId)) {
+            return;
+        }
+
         const link = createDefaultLink(id, from, to);
 
         const newLinks = new Map(this.world.links);
@@ -253,13 +260,13 @@ export class SimulationEngine {
         const fromNode = newNodes.get(from);
         const toNode = newNodes.get(to);
 
-        if (fromNode) {
+        if (fromNode && !fromNode.connections.includes(to)) {
             newNodes.set(from, {
                 ...fromNode,
                 connections: [...fromNode.connections, to]
             });
         }
-        if (toNode) {
+        if (toNode && !toNode.connections.includes(from)) {
             newNodes.set(to, {
                 ...toNode,
                 connections: [...toNode.connections, from]
@@ -276,9 +283,30 @@ export class SimulationEngine {
     }
 
     removeLink(id: string): void {
+        const link = this.world.links.get(id);
         const newLinks = new Map(this.world.links);
         newLinks.delete(id);
-        this.world = { ...this.world, links: newLinks };
+
+        // BUG-7 FIX: Also clean up node connections arrays
+        const newNodes = new Map(this.world.nodes);
+        if (link) {
+            const fromNode = newNodes.get(link.from);
+            if (fromNode) {
+                newNodes.set(link.from, {
+                    ...fromNode,
+                    connections: fromNode.connections.filter(c => c !== link.to)
+                });
+            }
+            const toNode = newNodes.get(link.to);
+            if (toNode) {
+                newNodes.set(link.to, {
+                    ...toNode,
+                    connections: toNode.connections.filter(c => c !== link.from)
+                });
+            }
+        }
+
+        this.world = { ...this.world, nodes: newNodes, links: newLinks };
         this.notifyListeners();
     }
 
@@ -412,17 +440,38 @@ export class SimulationEngine {
 
     // ===== SNAPSHOT =====
     snapshot(): WorldState {
+        // BUG-1 FIX: Properly serialize nested Maps (arpTable, dnsCache) inside Nodes
+        const serializedNodes: [string, Record<string, unknown>][] = [];
+        for (const [id, node] of this.world.nodes) {
+            serializedNodes.push([id, {
+                ...node,
+                arpTable: Array.from(node.arpTable.entries()),
+                dnsCache: Array.from(node.dnsCache.entries())
+            }]);
+        }
+
         return JSON.parse(JSON.stringify({
             ...this.world,
-            nodes: Array.from(this.world.nodes.entries()),
+            nodes: serializedNodes,
             links: Array.from(this.world.links.entries())
         }));
     }
 
     restore(snapshot: WorldState): void {
+        // BUG-1 FIX: Restore nested Maps inside Nodes
+        const rawNodes = snapshot.nodes as unknown as [string, Record<string, unknown>][];
+        const restoredNodes = new Map<string, Node>();
+        for (const [id, rawNode] of rawNodes) {
+            restoredNodes.set(id, {
+                ...rawNode,
+                arpTable: new Map(rawNode.arpTable as [string, string][]),
+                dnsCache: new Map(rawNode.dnsCache as [string, string][])
+            } as Node);
+        }
+
         this.world = {
             ...snapshot,
-            nodes: new Map(snapshot.nodes as unknown as [string, Node][]),
+            nodes: restoredNodes,
             links: new Map(snapshot.links as unknown as [string, Link][])
         };
         this.notifyListeners();

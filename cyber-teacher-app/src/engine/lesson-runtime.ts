@@ -9,7 +9,6 @@ import {
     LessonRuntimeState,
     EventLog,
     createDefaultNode,
-    createDefaultLink,
     NodeType,
     PacketProtocol,
     Packet,
