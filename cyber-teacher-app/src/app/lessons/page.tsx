@@ -90,7 +90,7 @@ function LessonCardComponent({ lesson }: { lesson: LessonCard }) {
 
             {/* Start Lesson Button */}
             <Link
-                href={`/simulation?lesson=${lesson.id}`}
+                href={`/lesson/${lesson.id}`}
                 className="block w-full py-3 rounded-xl text-center text-sm font-semibold transition-all duration-300 relative z-10"
                 style={{
                     background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',

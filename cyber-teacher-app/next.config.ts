@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Enable static export
-  output: 'export',
   assetPrefix: './',
   trailingSlash: true,
   images: {

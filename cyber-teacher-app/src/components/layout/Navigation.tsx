@@ -18,7 +18,6 @@ import anime from 'animejs';
 
 const navItems = [
     { name: 'Lessons', href: '/lessons', Icon: LessonsIcon },
-    { name: 'Simulation', href: '/simulation', Icon: CpuIcon },
     { name: 'Sandbox', href: '/sandbox', Icon: SandboxIcon },
     { name: 'About', href: '/about', Icon: InfoIcon },
 ];
@@ -140,7 +139,7 @@ export function Navigation() {
 
                     {/* Start Defense CTA */}
                     <Link
-                        href="/simulation"
+                        href="/sandbox"
                         className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2"
                         style={{
                             background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',

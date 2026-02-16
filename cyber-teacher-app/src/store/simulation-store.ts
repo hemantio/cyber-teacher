@@ -44,12 +44,14 @@ interface SimulationState {
     // Viewport state
     viewport: ViewportState;
 
+    // Mode state
+    mode: 'sandbox' | 'lesson';
+
     // Actions - Entities
     addEntity: (entity: NetworkEntity) => void;
     removeEntity: (id: string) => void;
     updateEntityStatus: (id: string, status: EntityStatus) => void;
     updateEntityPosition: (id: string, x: number, y: number) => void;
-    setEntities: (entities: Map<string, NetworkEntity>) => void;
     clearEntities: () => void;
 
     // Actions - Connections
@@ -64,6 +66,11 @@ interface SimulationState {
     removePacket: (id: string) => void;
     clearPackets: () => void;
 
+    // Bulk setters
+    setEntities: (entities: Map<string, NetworkEntity>) => void;
+    setConnections: (connections: Map<string, Connection>) => void;
+    setPackets: (packets: Packet[]) => void;
+
     // Actions - Lesson
     loadLesson: (lesson: Lesson) => void;
     setCurrentStep: (index: number) => void;
@@ -76,6 +83,10 @@ interface SimulationState {
     pause: () => void;
     reset: () => void;
     setPlaybackSpeed: (speed: number) => void;
+
+    // Mode actions
+    resetToSandbox: () => void;
+    setLessonMode: (lessonId: string) => void;
 
     // Actions - Logs
     addLog: (entry: Omit<LogEntry, 'id' | 'timestamp'>) => void;
@@ -142,6 +153,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
         offsetY: 0,
         isDragging: false
     },
+    mode: 'sandbox',
 
     // Entity actions
     addEntity: (entity) => set((state) => {
@@ -171,9 +183,6 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
         newEntities.set(id, { ...entity, position: { x, y } });
         return { entities: newEntities };
     }),
-
-    // Entity actions
-    setEntities: (entities) => set({ entities }),
 
     clearEntities: () => set({ entities: new Map() }),
 
@@ -217,6 +226,11 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
     clearPackets: () => set({ packets: [] }),
 
+    // Bulk setters
+    setEntities: (entities) => set({ entities: new Map(entities) }),
+    setConnections: (connections) => set({ connections: new Map(connections) }),
+    setPackets: (packets) => set({ packets: [...packets] }),
+
     // Lesson actions
     loadLesson: (lesson) => set({
         currentLesson: lesson,
@@ -256,6 +270,25 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
         logs: []
     }),
     setPlaybackSpeed: (speed) => set({ playbackSpeed: speed }),
+
+    // Mode actions
+    resetToSandbox: () => {
+        const { clearEntities, clearConnections, clearPackets, clearLogs, reset } = get();
+        clearEntities();
+        clearConnections();
+        clearPackets();
+        clearLogs();
+        reset();
+        set({ mode: 'sandbox' });
+    },
+
+    setLessonMode: (lessonId) => {
+        const { reset } = get();
+        reset();
+        // Here we could find the lesson from lessonsData and load it
+        // For now just set the mode
+        set({ mode: 'lesson' });
+    },
 
     // Log actions
     addLog: (entry) => set((state) => ({

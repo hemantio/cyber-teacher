@@ -218,7 +218,7 @@ export default function HomePage() {
         {/* Connect Button */}
         {systemStatus === 'ready' && (
           <Link
-            href="/simulation"
+            href="/sandbox"
             onClick={handleConnect}
             className="relative group px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-105"
             style={{

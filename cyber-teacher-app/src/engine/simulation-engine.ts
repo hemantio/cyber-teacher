@@ -408,9 +408,33 @@ export class SimulationEngine {
         this.notifyListeners();
     }
 
-    reset(): void {
+    // ===== LESSON MODE =====
+    enterLessonMode(): void {
         this.pause();
-        this.world = createInitialWorldState(Date.now());
+        // Clear ephemeral state
+        this.world = {
+            ...this.world,
+            packets: [],
+            logs: []
+        };
+        this.notifyListeners();
+    }
+
+    exitLessonMode(): void {
+        this.pause();
+        this.notifyListeners();
+    }
+
+    loadLesson(lessonId: string): void {
+        // In a real app, this would load from a lesson definition
+        // For now, we clear the board and wait for the store to populate nodes
+        this.world = {
+            ...this.world,
+            nodes: new Map(),
+            links: new Map(),
+            packets: [],
+            logs: []
+        };
         this.notifyListeners();
     }
 
