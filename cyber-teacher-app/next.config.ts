@@ -1,16 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable static export
-  assetPrefix: './',
-  trailingSlash: true,
   images: {
     unoptimized: true,
   },
   // Disable X-Powered-By header
   poweredByHeader: false,
 
-  // Security headers (backup to middleware)
+  // Security headers
   async headers() {
     return [
       {
@@ -47,11 +44,6 @@ const nextConfig: NextConfig = {
         ]
       }
     ];
-  },
-
-  // Experimental features
-  experimental: {
-    // Enable server actions if needed
   },
 };
 

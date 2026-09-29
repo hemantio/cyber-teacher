@@ -14,7 +14,7 @@ import {
   Share2,
   Check,
   Grid,
-  Bookmark
+  X
 } from 'lucide-react';
 
 interface TestRunnerProps {
@@ -107,6 +107,7 @@ export function TestRunner({
     if (currentIndex < totalQuestions - 1) {
       setCurrentIndex(prev => prev + 1);
       playClick();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [currentIndex, totalQuestions, playClick]);
 
@@ -114,6 +115,7 @@ export function TestRunner({
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
       playClick();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [currentIndex, playClick]);
 
@@ -141,20 +143,28 @@ export function TestRunner({
   }, [handleSelectOption, handleNext, handlePrev, handleToggleMarkReview, showConfirmModal, isSubmitted, mode]);
 
   // Submit test
-  const handleSubmitTest = () => {
+  const handleSubmitTest = useCallback(() => {
     setShowConfirmModal(false);
     setIsSubmitted(true);
+    setIsReviewing(false);
 
-    let correct = 0;
+    let correctCount = 0;
     questions.forEach(q => {
-      if (responses[q.id] === q.correctIndex) correct++;
+      if (responses[q.id] === q.correctIndex) {
+        correctCount++;
+      }
     });
 
-    const pct = Math.round((correct / totalQuestions) * 100);
-    if (pct >= 60) playVictory();
-    else playDefeat();
-  };
+    const pct = Math.round((correctCount / totalQuestions) * 100);
+    if (pct >= 60) {
+      playVictory();
+    } else {
+      playDefeat();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [questions, responses, totalQuestions, playVictory, playDefeat]);
 
+  // Retake test
   const handleRetake = () => {
     setResponses({});
     setMarkedForReview({});
@@ -164,34 +174,38 @@ export function TestRunner({
     setIsSubmitted(false);
     setIsReviewing(false);
     playClick();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Share link
   const handleShareLink = () => {
-    const shareUrl = typeof window !== 'undefined'
+    const url = typeof window !== 'undefined'
       ? `${window.location.origin}/tests?unit=${test.id}&mode=${mode}`
-      : `https://cyber-teacher-app.vercel.app/tests?unit=${test.id}`;
+      : `https://cyber-teacher-app.vercel.app/tests?unit=${test.id}&mode=${mode}`;
 
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareUrl);
+      navigator.clipboard.writeText(url);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 3000);
     }
   };
 
-  // Compile report
+  // Compute final report
   const resultReport: TestResultReport = useMemo(() => {
     let correctCount = 0;
     const topicMap: Record<string, { total: number; correct: number }> = {};
 
     questions.forEach(q => {
-      const isCorrect = responses[q.id] === q.correctIndex;
-      if (isCorrect) correctCount++;
-
-      if (!topicMap[q.topic]) {
-        topicMap[q.topic] = { total: 0, correct: 0 };
+      const topic = q.topic || 'General AI';
+      if (!topicMap[topic]) {
+        topicMap[topic] = { total: 0, correct: 0 };
       }
-      topicMap[q.topic].total += 1;
-      if (isCorrect) topicMap[q.topic].correct += 1;
+      topicMap[topic].total += 1;
+
+      if (responses[q.id] === q.correctIndex) {
+        correctCount++;
+        topicMap[topic].correct += 1;
+      }
     });
 
     const percentage = Math.round((correctCount / totalQuestions) * 100);
@@ -229,7 +243,7 @@ export function TestRunner({
 
   if (isSubmitted && !isReviewing) {
     return (
-      <div className="w-full max-w-4xl mx-auto px-4 py-8">
+      <div className="w-full max-w-3xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <ScoreCard
           report={resultReport}
           onRetake={handleRetake}
@@ -241,35 +255,43 @@ export function TestRunner({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6 space-y-5">
-      {/* Top Test Navigation Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 md:p-4 rounded-xl bg-slate-900 border border-slate-800">
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={isReviewing ? () => setIsReviewing(false) : onBackToPortal}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors"
-          >
-            <ArrowLeft size={14} />
-            <span>{isReviewing ? 'Scorecard' : 'Exit'}</span>
-          </button>
+    <div className="w-full max-w-4xl mx-auto space-y-3.5 sm:space-y-5">
+      {/* Top Test Navigation Bar - Mobile Responsive 2-Row Stack */}
+      <div className="rounded-xl bg-slate-900 border border-slate-800 p-3 sm:p-4 space-y-2.5">
+        {/* Row 1: Exit + Title + Share */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <button
+              onClick={isReviewing ? () => setIsReviewing(false) : onBackToPortal}
+              className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors shrink-0 active:scale-95"
+            >
+              <ArrowLeft size={13} />
+              <span>{isReviewing ? 'Score' : 'Exit'}</span>
+            </button>
 
-          <div>
-            <h2 className="text-sm font-semibold text-slate-200 truncate max-w-xs md:max-w-md">
+            <h2 className="text-xs sm:text-sm font-semibold text-slate-200 truncate">
               {test.title}
             </h2>
-            <span className="text-[11px] text-slate-400">
-              {test.pyqCount} University PYQs Included
-            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handleShareLink}
+              className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors active:scale-95"
+              title="Share test link"
+            >
+              {copiedLink ? <Check size={14} className="text-emerald-400" /> : <Share2 size={14} />}
+            </button>
           </div>
         </div>
 
-        {/* Mode Selector & Timer */}
-        <div className="flex items-center gap-2">
+        {/* Row 2: Mode Switcher + Timer + Palette Button */}
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
           {!isSubmitted && (
-            <div className="flex items-center p-0.5 rounded-lg bg-slate-800 text-xs font-medium">
+            <div className="flex items-center p-0.5 rounded-lg bg-slate-800 text-xs">
               <button
                 onClick={() => { setMode('practice'); playClick(); }}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
+                className={`h-7 px-2.5 rounded-md text-[11px] sm:text-xs transition-colors ${
                   mode === 'practice'
                     ? 'bg-slate-700 text-white font-semibold'
                     : 'text-slate-400 hover:text-slate-200'
@@ -279,7 +301,7 @@ export function TestRunner({
               </button>
               <button
                 onClick={() => { setMode('exam'); playClick(); }}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
+                className={`h-7 px-2.5 rounded-md text-[11px] sm:text-xs transition-colors ${
                   mode === 'exam'
                     ? 'bg-slate-700 text-white font-semibold'
                     : 'text-slate-400 hover:text-slate-200'
@@ -290,47 +312,43 @@ export function TestRunner({
             </div>
           )}
 
-          {/* Timer */}
-          <div
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono font-medium ${
-              mode === 'exam' && timeRemainingSeconds < 120
-                ? 'bg-rose-950/40 border-rose-600 text-rose-300'
-                : 'bg-slate-800 border-slate-700 text-slate-200'
-            }`}
-          >
-            <Clock size={13} className="text-slate-400" />
-            <span>{mode === 'exam' ? formatTimer(timeRemainingSeconds) : formatTimer(elapsedSeconds)}</span>
+          <div className="flex items-center gap-2">
+            {/* Timer Display */}
+            <div
+              className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-lg border text-xs font-mono font-medium ${
+                mode === 'exam' && timeRemainingSeconds < 120
+                  ? 'bg-rose-950/40 border-rose-600 text-rose-300'
+                  : 'bg-slate-800 border-slate-700 text-slate-200'
+              }`}
+            >
+              <Clock size={12} className="text-slate-400 shrink-0" />
+              <span>{mode === 'exam' ? formatTimer(timeRemainingSeconds) : formatTimer(elapsedSeconds)}</span>
+            </div>
+
+            {/* Question Palette Toggle */}
+            <button
+              onClick={() => setShowPalette(!showPalette)}
+              className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-lg border text-xs transition-colors active:scale-95 ${
+                showPalette
+                  ? 'bg-sky-600 text-white border-sky-500 font-semibold'
+                  : 'bg-slate-800 text-slate-300 hover:text-white border-slate-700'
+              }`}
+              title="Question Palette"
+            >
+              <Grid size={13} />
+              <span>Palette</span>
+            </button>
           </div>
-
-          {/* Question Grid Button */}
-          <button
-            onClick={() => setShowPalette(!showPalette)}
-            className={`p-1.5 rounded-lg border transition-colors ${
-              showPalette ? 'bg-slate-700 text-white border-slate-600' : 'bg-slate-800 text-slate-400 hover:text-white border-slate-700'
-            }`}
-            title="Question Grid"
-          >
-            <Grid size={15} />
-          </button>
-
-          {/* Copy Link */}
-          <button
-            onClick={handleShareLink}
-            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition-colors"
-            title="Share test link"
-          >
-            {copiedLink ? <Check size={15} className="text-emerald-400" /> : <Share2 size={15} />}
-          </button>
         </div>
       </div>
 
       {/* Progress Line */}
-      <div className="space-y-1">
-        <div className="flex items-center justify-between text-xs text-slate-400 px-0.5">
+      <div className="space-y-1 px-0.5">
+        <div className="flex items-center justify-between text-[11px] sm:text-xs text-slate-400">
           <span>Question {currentIndex + 1} of {totalQuestions}</span>
-          <span>{answeredCount} of {totalQuestions} answered</span>
+          <span>{answeredCount} / {totalQuestions} answered</span>
         </div>
-        <div className="w-full h-1 rounded-full bg-slate-800 overflow-hidden">
+        <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
           <div
             className="h-full bg-sky-500 transition-all duration-200"
             style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }}
@@ -338,19 +356,26 @@ export function TestRunner({
         </div>
       </div>
 
-      {/* Question Palette Drawer */}
+      {/* Question Palette Drawer - Mobile Grid */}
       {showPalette && (
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+        <div className="p-3.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="font-semibold text-slate-300">Question Palette</span>
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-sky-600" /> Answered</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> Review</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-700" /> Unanswered</span>
-            </div>
+            <span className="font-semibold text-slate-200">Question Palette</span>
+            <button
+              onClick={() => setShowPalette(false)}
+              className="text-slate-400 hover:text-white p-1 rounded-md"
+            >
+              <X size={15} />
+            </button>
           </div>
 
-          <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 gap-1.5">
+          <div className="flex flex-wrap items-center gap-2.5 text-[10px] sm:text-xs text-slate-400 pb-1 border-b border-slate-800">
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-sky-600" /> Answered</span>
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-500" /> Marked</span>
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-slate-800 border border-slate-700" /> Unanswered</span>
+          </div>
+
+          <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 gap-1.5 max-h-60 overflow-y-auto p-0.5">
             {questions.map((q, idx) => {
               const isAns = responses[q.id] !== undefined && responses[q.id] !== null;
               const isMark = markedForReview[q.id];
@@ -368,8 +393,13 @@ export function TestRunner({
               return (
                 <button
                   key={q.id}
-                  onClick={() => { setCurrentIndex(idx); playClick(); }}
-                  className={`h-8 rounded text-xs border flex items-center justify-center transition-colors ${btnClass}`}
+                  onClick={() => {
+                    setCurrentIndex(idx);
+                    playClick();
+                    setShowPalette(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className={`h-9 rounded-lg text-xs border flex items-center justify-center transition-colors active:scale-95 touch-manipulation ${btnClass}`}
                 >
                   {idx + 1}
                 </button>
@@ -379,7 +409,7 @@ export function TestRunner({
         </div>
       )}
 
-      {/* Question Card */}
+      {/* Main Question Card */}
       <QuestionCard
         question={currentQuestion}
         questionNumber={currentIndex + 1}
@@ -392,19 +422,19 @@ export function TestRunner({
         showExplanation={isReviewing}
       />
 
-      {/* Footer Navigation Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+      {/* Thumb-Friendly Bottom Navigation Bar */}
+      <div className="flex items-center justify-between gap-2.5 pt-2 pb-6">
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs md:text-sm font-medium border transition-colors ${
+          className={`h-11 sm:h-10 inline-flex items-center gap-1.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all active:scale-95 touch-manipulation ${
             currentIndex === 0
-              ? 'opacity-40 cursor-not-allowed border-slate-800 text-slate-600 bg-slate-900/40'
+              ? 'opacity-30 cursor-not-allowed border-slate-800 text-slate-600 bg-slate-900/40'
               : 'border-slate-700 text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white'
           }`}
         >
-          <ArrowLeft size={14} />
-          Previous
+          <ArrowLeft size={15} />
+          <span>Previous</span>
         </button>
 
         {mode === 'exam' && !isSubmitted && responses[currentQuestion.id] !== undefined && (
@@ -417,9 +447,9 @@ export function TestRunner({
               });
               playClick();
             }}
-            className="text-xs text-slate-400 hover:text-slate-200 underline"
+            className="text-xs text-slate-400 hover:text-slate-200 underline px-2 py-1"
           >
-            Clear Response
+            Clear
           </button>
         )}
 
@@ -427,10 +457,10 @@ export function TestRunner({
           {currentIndex < totalQuestions - 1 ? (
             <button
               onClick={handleNext}
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs md:text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white transition-colors"
+              className="h-11 sm:h-10 inline-flex items-center gap-1.5 px-5 sm:px-6 rounded-xl text-xs sm:text-sm font-semibold bg-sky-600 hover:bg-sky-500 text-white transition-all active:scale-95 touch-manipulation shadow-sm"
             >
-              Next
-              <ArrowRight size={14} />
+              <span>Next</span>
+              <ArrowRight size={15} />
             </button>
           ) : (
             <button
@@ -441,38 +471,41 @@ export function TestRunner({
                   handleSubmitTest();
                 }
               }}
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs md:text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+              className="h-11 sm:h-10 inline-flex items-center gap-1.5 px-5 sm:px-6 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all active:scale-95 touch-manipulation shadow-sm"
             >
-              <CheckCircle2 size={14} />
-              {isSubmitted ? 'View Scorecard' : 'Submit Test'}
+              <CheckCircle2 size={15} />
+              <span>{isSubmitted ? 'View Scorecard' : 'Submit Test'}</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Confirmation Dialog */}
+      {/* Confirmation Modal for Unanswered Questions */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-          <div className="w-full max-w-sm p-5 rounded-xl bg-slate-900 border border-slate-700 shadow-xl space-y-3">
-            <div className="flex items-center gap-2 text-amber-400 font-semibold text-sm">
-              <AlertCircle size={18} />
-              <span>Unanswered Questions</span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="w-full max-w-sm rounded-2xl bg-slate-900 border border-slate-700 p-5 space-y-4 shadow-xl">
+            <div className="flex items-center gap-2.5 text-amber-400">
+              <AlertCircle size={22} className="shrink-0" />
+              <h3 className="text-base font-bold text-white">Unanswered Questions</h3>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              You answered {answeredCount} of {totalQuestions} questions. Are you sure you want to finish and submit?
+
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              You answered <strong>{answeredCount}</strong> of <strong>{totalQuestions}</strong> questions.
+              {totalQuestions - answeredCount} questions remain unattempted.
             </p>
-            <div className="flex items-center justify-end gap-2 pt-2">
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700"
+                className="h-10 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 active:scale-95"
               >
-                Continue Test
+                Keep Answering
               </button>
               <button
                 onClick={handleSubmitTest}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white"
+                className="h-10 px-3 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white active:scale-95"
               >
-                Submit Now
+                Yes, Submit
               </button>
             </div>
           </div>
