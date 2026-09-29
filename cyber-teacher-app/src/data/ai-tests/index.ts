@@ -16,7 +16,7 @@ export const ALL_UNIT_TESTS: UnitTest[] = [
     title: 'Unit 1: Intelligent Agents & Problem Solving by Searching',
     subtitle: 'Agents, Environments, PEAS, Uninformed Search, A* & Adversarial Game Trees',
     unitNumber: 1,
-    badge: 'UNIT 1 • FOUNDATIONS & SEARCH',
+    badge: 'SEM 5 • UNIT 1',
     description: 'Master the foundations of Artificial Intelligence: AI definitions, PEAS frameworks, Agent architectures (Reflex, Goal, Utility, Learning), Uninformed Search (BFS, DFS, UCS, IDS), Informed Heuristic Search (Greedy, A* admissibility & consistency), and Adversarial Minimax with Alpha-Beta Pruning.',
     estimatedMinutes: 35,
     gradient: 'from-cyan-500/20 via-blue-500/10 to-indigo-500/20',
@@ -41,7 +41,7 @@ export const ALL_UNIT_TESTS: UnitTest[] = [
     title: 'Unit 2: Knowledge Representation, Logic & Supervised Machine Learning',
     subtitle: 'Logic, Semantic Networks, Frames, Fuzzy Systems, Decision Trees, Regression, SVM & Neural Networks',
     unitNumber: 2,
-    badge: 'UNIT 2 • LOGIC & SUPERVISED ML',
+    badge: 'SEM 5 • UNIT 2',
     description: 'Thoroughly covers Knowledge Representation & Reasoning: Propositional Logic, Semantic Networks, Frame Representation, Deductive/Inductive/Abductive reasoning, Fuzzy Logic systems & Defuzzification. Extends into Supervised Learning: Decision Trees, Entropy, Linear & Logistic Regression, L1/L2 Regularization, Nonparametric Models, SVM & Kernels, Neural Networks & Backpropagation, and Ensemble Learning.',
     estimatedMinutes: 40,
     gradient: 'from-purple-500/20 via-pink-500/10 to-blue-500/20',
@@ -68,7 +68,7 @@ export const ALL_UNIT_TESTS: UnitTest[] = [
     title: 'Unit 3: Probabilistic Models, Unsupervised Learning & Reinforcement Learning',
     subtitle: 'Bayes Theorem, Naive Bayes, EM, Clustering, Solved Association Rule Mining Numericals & Q-Learning',
     unitNumber: 3,
-    badge: 'UNIT 3 • PROBABILISTIC, UNSUPERVISED & RL',
+    badge: 'SEM 5 • UNIT 3',
     description: 'Comprehensive evaluation covering Probabilistic Models: Statistical Learning, Bayes Theorem, Naive Bayes with MAP, EM Algorithm, and HMMs. Explores Unsupervised Learning: K-Means & Hierarchical Clustering, Association Rule Mining with Support/Confidence/Lift solved numericals, and Reinforcement Learning: Passive RL, TD Learning, Active Q-Learning, and Policy Search.',
     estimatedMinutes: 40,
     gradient: 'from-emerald-500/20 via-teal-500/10 to-cyan-500/20',
@@ -92,9 +92,9 @@ export const ALL_UNIT_TESTS: UnitTest[] = [
   },
   {
     id: 'pyq-special',
-    title: 'University PYQ Mega Bank (Papers 1 - 9)',
+    title: 'Semester 5 University PYQ Mega Bank (Papers 1 - 9)',
     subtitle: 'Curated compilation of past Mumbai University exam questions & exact paper numericals',
-    badge: 'UNIVERSITY PYQ SPECIAL',
+    badge: 'SEM 5 • PAST PAPERS 1-9',
     description: 'A focused, high-yield drill consisting exclusively of verified past paper questions, MCQs, fill-in-the-blanks, and step-by-step numerical problems cited directly from University examination papers 1 through 9.',
     estimatedMinutes: 25,
     gradient: 'from-amber-500/20 via-orange-500/10 to-rose-500/20',
@@ -113,9 +113,9 @@ export const ALL_UNIT_TESTS: UnitTest[] = [
   },
   {
     id: 'full-mock',
-    title: 'Full Syllabus Grand Mock Exam (All Units 1, 2 & 3)',
+    title: 'Semester 5 Full Syllabus Grand Mock Exam',
     subtitle: '45-Question comprehensive timed examination simulating real college semester tests',
-    badge: 'GRAND EXAM SIMULATION',
+    badge: 'SEM 5 • FULL SEMESTER EXAM',
     description: 'The ultimate test of Artificial Intelligence mastery. Combines randomized questions across all 3 units with real-time countdown timer, comprehensive scorecard, topic-wise strength analysis, and review mode.',
     estimatedMinutes: 45,
     gradient: 'from-rose-500/20 via-purple-500/10 to-cyan-500/20',
@@ -153,7 +153,7 @@ export function calculateGrade(percentage: number): {
 } {
   if (percentage >= 90) {
     return {
-      title: 'AI Grandmaster (Distinction)',
+      title: 'Distinction (Outstanding)',
       description: 'Exceptional mastery across all units, algorithms, and numericals! Ready to top the university exam.',
       color: '#10B981',
       badge: 'O Grade (Outstanding)'
@@ -162,28 +162,28 @@ export function calculateGrade(percentage: number): {
     return {
       title: 'First Class with Distinction',
       description: 'Strong conceptual grasp across search, logic, machine learning, and probabilistic models.',
-      color: '#22D3EE',
+      color: '#0284c7',
       badge: 'A+ Grade (Excellent)'
     };
   } else if (percentage >= 60) {
     return {
       title: 'First Class',
       description: 'Good foundational understanding. Review missed topics and numericals to boost your score.',
-      color: '#3B82F6',
+      color: '#2563eb',
       badge: 'A Grade (Very Good)'
     };
   } else if (percentage >= 50) {
     return {
       title: 'Second Class (Pass)',
       description: 'Cleared the test. We recommend reviewing Unit 2 & 3 numericals and algorithm optimality proofs.',
-      color: '#F59E0B',
+      color: '#d97706',
       badge: 'B Grade (Good)'
     };
   } else {
     return {
       title: 'Needs Revision',
       description: 'Several key concepts were missed. Practice using Practice Mode with instant explanations.',
-      color: '#EF4444',
+      color: '#dc2626',
       badge: 'Re-attempt Recommended'
     };
   }
