@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Sparkles, Cpu } from 'lucide-react';
 import { Navigation } from '@/components/layout/Navigation';
 export default function HomePage() {
   const [systemStatus, setSystemStatus] = useState<'initializing' | 'ready' | 'connecting'>('initializing');
@@ -74,6 +75,18 @@ export default function HomePage() {
             <div className="h-full w-0 bg-red-500 transition-all duration-500" />
           </div>
 
+          <Link
+            href="/tests"
+            className="px-3 py-1 rounded-lg text-xs font-semibold transition-all hidden sm:flex items-center gap-1.5"
+            style={{
+              background: 'rgba(34, 211, 238, 0.2)',
+              border: '1px solid rgba(34, 211, 238, 0.4)',
+              color: '#22D3EE'
+            }}
+          >
+            <Cpu size={13} />
+            AI Tests & PYQ
+          </Link>
           <Link
             href="/lessons"
             className="px-3 py-1 rounded-lg text-xs font-semibold transition-all hidden sm:block"
@@ -217,28 +230,38 @@ export default function HomePage() {
 
         {/* Connect Button */}
         {systemStatus === 'ready' && (
-          <Link
-            href="/sandbox"
-            onClick={handleConnect}
-            className="relative group px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-105"
-            style={{
-              background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #8B5CF6 100%)',
-              boxShadow: '0 10px 40px rgba(34, 211, 238, 0.4)'
-            }}
-          >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          <div className="flex flex-col items-center gap-3">
+            <Link
+              href="/sandbox"
+              onClick={handleConnect}
+              className="relative group px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-105"
               style={{
-                background: 'linear-gradient(135deg, #22D3EE 0%, #3B82F6 50%, #A855F7 100%)',
-                filter: 'blur(20px)',
-                transform: 'scale(1.1)'
+                background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #8B5CF6 100%)',
+                boxShadow: '0 10px 40px rgba(34, 211, 238, 0.4)'
               }}
-            />
-            <span className="relative flex items-center gap-3">
-              <span></span>
-              CONNECT TO INTERNET
-            </span>
-          </Link>
+            >
+              {/* Glow Effect */}
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, #22D3EE 0%, #3B82F6 50%, #A855F7 100%)',
+                  filter: 'blur(20px)',
+                  transform: 'scale(1.1)'
+                }}
+              />
+              <span className="relative flex items-center gap-3">
+                <span></span>
+                CONNECT TO INTERNET
+              </span>
+            </Link>
+
+            <Link
+              href="/tests"
+              className="mt-2 flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold bg-slate-900/90 hover:bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 shadow-lg shadow-cyan-500/10 transition-all hover:scale-105 active:scale-95"
+            >
+              <Sparkles size={14} className="text-cyan-400" />
+              <span>AI Exam Test Suite (Unit 1, 2, 3 & PYQs)</span>
+            </Link>
+          </div>
         )}
 
         {systemStatus === 'connecting' && (

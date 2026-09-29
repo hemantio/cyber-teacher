@@ -17,6 +17,7 @@ import { Shield, Menu, X } from 'lucide-react';
 import anime from 'animejs';
 
 const navItems = [
+    { name: 'AI Tests', href: '/tests', Icon: CpuIcon },
     { name: 'Lessons', href: '/lessons', Icon: LessonsIcon },
     { name: 'Sandbox', href: '/sandbox', Icon: SandboxIcon },
     { name: 'About', href: '/about', Icon: InfoIcon },
